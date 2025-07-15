@@ -7,9 +7,9 @@ title: Home
 ---
 👋 Hey! 
 
-I'm Jaydon, a backend developer that specialises in building Shopify apps and integrations. From starting web development from the age of 13, I've built a deep understanding of programming fundamentals and a passion for building clean, scalable systems. 
+I'm Jaydon, I specialise in building bespoke backend Shopify apps and integrations. From starting web development from the age of 13, I've built a deep understanding of programming fundamentals and a passion for building clean, scalable systems. 
 
-Currently employed at [Onstate](https://onstate.co.uk), a Shopify Plus Premier Partner agency offering a range of commercial services from strategy to implementation.
+Currently full-time at [Onstate](https://onstate.co.uk), a Shopify Plus Premier Partner agency offering a range of commercial services from strategy to implementation.
 
 I'm a huge advocate for open source software and enjoy building complex systems with a focus on developer experience.
 
@@ -21,7 +21,7 @@ After-hours and weekend work is available for a limited number of projects.
 
 If you'd like to get in touch, please contact me via [email](mailto:hi@jtay.co.uk).
 
-*I work at a minimum freelancer rate of £240 / day.*
+*I work at a minimum freelancer rate of £360 / day.*
 
 ---
 

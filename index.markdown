@@ -29,3 +29,14 @@ If you'd like to get in touch, please contact me via [email](mailto:hi@jtay.co.u
 - ✉️ [jaydon.us@gmail.com](mailto:jaydon.us@gmail.com)
 - 🐙 [github.com/jtay](https://github.com/jtay)
 - 📦 [npmjs.com/~jaydon](https://www.npmjs.com/~jaydon)
+
+---
+
+        __
+     -=(o '.
+        '.-.\
+        /|  \\
+        '|  ||
+        _\_):,_
+
+---

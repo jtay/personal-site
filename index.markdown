@@ -21,7 +21,7 @@ After-hours and weekend work is available for a limited number of projects.
 
 If you'd like to get in touch, please contact me via [email](mailto:hi@jtay.co.uk).
 
-*I work at a minimum freelancer rate of £480 / day.*
+*My freelance rate is £480 / day.*
 
 ---
 

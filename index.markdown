@@ -19,7 +19,7 @@ I'm a huge advocate for open source software and enjoy building complex systems 
 
 After-hours and weekend work is available for a limited number of projects.
 
-If you'd like to get in touch, please contact me via [email](mailto:hi@jtay.co.uk).
+If you'd like to get in touch, please contact me via [email](mailto:jaydon.us@gmail.com).
 
 *My freelance rate is £480 / day.*
 

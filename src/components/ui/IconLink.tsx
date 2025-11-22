@@ -1,0 +1,43 @@
+import {
+  BlockStack,
+  Box,
+  Button,
+  Icon,
+  Text,
+  type IconSource,
+} from '@shopify/polaris'
+
+export type IconLinkProps = {
+  icon: IconSource
+  title: string
+  onClick?: () => unknown
+  url?: string
+}
+
+export const IconLink = ({ icon, title, onClick, url }: IconLinkProps) => {
+  return (
+    <Box background="bg-fill-active" borderRadius="150">
+      <Button
+        variant="tertiary"
+        onClick={onClick ? onClick : undefined}
+        url={url ? url : undefined}
+      >
+        {/** @ts-expect-error Button can handle elements */}
+        <Box padding="050">
+          <BlockStack gap="100">
+            {icon && (
+              <Text as="h1" variant="headingLg">
+                <Icon source={icon} />
+              </Text>
+            )}
+            {title && (
+              <Text as="h5" variant="headingXs" tone="subdued">
+                {title}
+              </Text>
+            )}
+          </BlockStack>
+        </Box>
+      </Button>
+    </Box>
+  )
+}

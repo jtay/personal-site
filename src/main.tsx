@@ -1,0 +1,22 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import '@shopify/polaris/build/esm/styles.css'
+import enTranslations from '@shopify/polaris/locales/en.json'
+import { AppProvider } from '@shopify/polaris'
+import { BrowserRouter, Routes, Route } from 'react-router'
+import { Home } from './pages/Home'
+import { TopBar } from './components/core/TopBar'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <AppProvider i18n={enTranslations}>
+      <TopBar>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </BrowserRouter>
+      </TopBar>
+    </AppProvider>
+  </StrictMode>,
+)

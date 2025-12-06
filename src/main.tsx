@@ -6,17 +6,20 @@ import { AppProvider } from '@shopify/polaris'
 import { BrowserRouter, Routes, Route } from 'react-router'
 import { Home } from './pages/Home'
 import { TopBar } from './components/core/TopBar'
+import { StrapiProvider } from './context/StrapiContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AppProvider i18n={enTranslations}>
-      <TopBar>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-          </Routes>
-        </BrowserRouter>
-      </TopBar>
-    </AppProvider>
+    <StrapiProvider>
+      <AppProvider i18n={enTranslations}>
+        <TopBar>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+            </Routes>
+          </BrowserRouter>
+        </TopBar>
+      </AppProvider>
+    </StrapiProvider>
   </StrictMode>,
 )

@@ -1,0 +1,46 @@
+{
+  "kind": "singleType",
+  "collectionName": "freelances",
+  "info": {
+    "singularName": "freelance-config",
+    "pluralName": "freelances",
+    "displayName": "Freelance Config"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heading": {
+      "type": "string"
+    },
+    "availability": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "AVAILABLE",
+        "IN_PROJECT",
+        "UNAVAILABLE"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "availableFrom": {
+      "type": "date"
+    },
+    "hourlyRate": {
+      "type": "integer",
+      "required": false
+    },
+    "hoursPerDay": {
+      "type": "decimal"
+    },
+    "ctaText": {
+      "type": "string"
+    },
+    "ctaEnabled": {
+      "type": "boolean"
+    }
+  }
+}

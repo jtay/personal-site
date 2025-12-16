@@ -430,6 +430,41 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   }
 }
 
+export interface ApiBlogPostBlogPost extends Struct.CollectionTypeSchema {
+  collectionName: 'blog_posts'
+  info: {
+    displayName: 'Blog Post'
+    pluralName: 'blog-posts'
+    singularName: 'blog-post'
+  }
+  options: {
+    draftAndPublish: true
+  }
+  attributes: {
+    content: Schema.Attribute.Blocks
+    createdAt: Schema.Attribute.DateTime
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private
+    featuredImage_landscape: Schema.Attribute.Media<'images'>
+    featuredImage_portrait: Schema.Attribute.Media<'images'>
+    handle: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique
+    locale: Schema.Attribute.String & Schema.Attribute.Private
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::blog-post.blog-post'
+    > &
+      Schema.Attribute.Private
+    publishedAt: Schema.Attribute.DateTime
+    subtitle: Schema.Attribute.String
+    title: Schema.Attribute.String
+    updatedAt: Schema.Attribute.DateTime
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private
+  }
+}
+
 export interface ApiFreelanceConfigFreelanceConfig
   extends Struct.SingleTypeSchema {
   collectionName: 'freelances'
@@ -979,6 +1014,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken
       'admin::transfer-token-permission': AdminTransferTokenPermission
       'admin::user': AdminUser
+      'api::blog-post.blog-post': ApiBlogPostBlogPost
       'api::freelance-config.freelance-config': ApiFreelanceConfigFreelanceConfig
       'plugin::content-releases.release': PluginContentReleasesRelease
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction

@@ -6,6 +6,7 @@ import type { StrapiClient } from '@strapi/client';
 // Define the shape of your Strapi context
 interface StrapiContextType {
   strapi: StrapiClient;
+  getImageUrl: (path: string) => string;
 }
 
 // Create the context with undefined as default
@@ -32,8 +33,17 @@ export const StrapiProvider: React.FC<StrapiProviderProps> = ({ children }) => {
     return client;
   }, []);
 
+  const getImageUrl = React.useCallback((path: string): string => {
+    const url = import.meta.env.VITE_STRAPI_URL;
+    // Remove leading slash from path if present to avoid double slashes
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    // Remove trailing slash from URL if present
+    const cleanUrl = url.endsWith('/') ? url.slice(0, -1) : url;
+    return `${cleanUrl}/${cleanPath}`;
+  }, []);
+
   return (
-    <StrapiContext.Provider value={{ strapi: strapiClient }}>
+    <StrapiContext.Provider value={{ strapi: strapiClient, getImageUrl }}>
       {children}
     </StrapiContext.Provider>
   );

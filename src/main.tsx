@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from 'react-router'
 import { Home } from './pages/Home'
 import { TopBar } from './components/core/TopBar'
 import { StrapiProvider } from './context/StrapiContext'
+import { Blog } from './pages/Blog'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/blog" element={<Blog />} />
             </Routes>
           </BrowserRouter>
         </TopBar>

@@ -19,7 +19,7 @@ export const AboutMe = () => {
             <InlineStack gap="200" blockAlign="center">
               <Box maxWidth="25%">
                 <Avatar
-                  source="http://localhost:5173/assets/jaydon.jpg"
+                  source="/assets/jaydon.jpg"
                   size="xl"
                 />
               </Box>

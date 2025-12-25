@@ -35,6 +35,9 @@ export const StrapiProvider: React.FC<StrapiProviderProps> = ({ children }) => {
 
   const getImageUrl = React.useCallback((path: string): string => {
     const url = import.meta.env.VITE_STRAPI_URL;
+    if(path.startsWith(url)){
+      return path;
+    }
     // Remove leading slash from path if present to avoid double slashes
     const cleanPath = path.startsWith('/') ? path.slice(1) : path;
     // Remove trailing slash from URL if present

@@ -8,6 +8,7 @@ import { Home } from './pages/Home'
 import { TopBar } from './components/core/TopBar'
 import { StrapiProvider } from './context/StrapiContext'
 import { Blog } from './pages/Blog'
+import { BlogPost } from './pages/BlogPost'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -18,8 +19,14 @@ createRoot(document.getElementById('root')!).render(
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:handle" element={<BlogPost />} />
             </Routes>
           </BrowserRouter>
+          <div
+            style={{
+              height: '64px'
+            }}
+          >&nbsp;</div>
         </TopBar>
       </AppProvider>
     </StrapiProvider>

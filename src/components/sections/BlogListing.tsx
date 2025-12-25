@@ -51,7 +51,7 @@ export const BlogListing = () => {
                     View All
                 </Button>
             </InlineStack>
-            <BlockStack>
+            <BlockStack gap="200">
                 {posts.map((post) => {
                   return <BlogPostSummary post={post} />
                 })}

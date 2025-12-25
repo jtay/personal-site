@@ -2,7 +2,7 @@ import { TopBar as ShopifyTopBar, Frame } from '@shopify/polaris'
 import type { ReactElement } from 'react'
 
 type TopBarProps = {
-  children: ReactElement
+  children: ReactElement[]
 }
 
 export const TopBar = ({ children }: TopBarProps) => {

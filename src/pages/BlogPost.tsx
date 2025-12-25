@@ -1,4 +1,4 @@
-import { BlockStack, Page, Text, InlineStack, Badge, Card, SkeletonBodyText, SkeletonDisplayText, Box, Button } from '@shopify/polaris'
+import { BlockStack, Page, Text, InlineStack, Card, SkeletonBodyText, SkeletonDisplayText, Box, Button } from '@shopify/polaris'
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { useStrapi } from '../context/StrapiContext'

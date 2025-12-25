@@ -1,7 +1,7 @@
 import { BlockStack, Icon, InlineStack, Text } from '@shopify/polaris'
 
 export type InlineIconMessageProps = {
-  icon: IconSource
+  icon: any;
   message: string
   subdued?: boolean
 }

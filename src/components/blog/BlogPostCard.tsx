@@ -1,4 +1,4 @@
-import { BlockStack, Box, InlineStack, Link, Text, Badge } from "@shopify/polaris"
+import { BlockStack, Box, InlineStack, Link, Text } from "@shopify/polaris"
 import type { BlogPostDocument } from "../../types/blog"
 import { useStrapi } from "../../context/StrapiContext"
 import { useNavigate } from "react-router"

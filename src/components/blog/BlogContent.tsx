@@ -1,14 +1,11 @@
 import { Text, Box } from '@shopify/polaris'
-import { useStrapi } from '../../context/StrapiContext'
 import type {
   StrapiContent,
   StrapiContentInline,
   StrapiContentText,
 } from '../../types/strapi'
 
-export const BlogContent = ({ content }: { content: StrapiContent }) => {
-  const { getImageUrl } = useStrapi();
-  
+export const BlogContent = ({ content }: { content: StrapiContent }) => {  
   if (!content || content.length === 0) return null
 
   // Helper function to render inline text with formatting

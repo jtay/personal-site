@@ -37,6 +37,7 @@ jobs:
         env:
           VITE_STRAPI_URL: ${{ secrets.VITE_STRAPI_URL }}
           VITE_STRAPI_TOKEN: ${{ secrets.VITE_STRAPI_TOKEN }}
+          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
           VITE_FORMSPREE_PROJECT_ID: ${{ secrets.VITE_FORMSPREE_PROJECT_ID }}
 
       - name: Copy index.html to 404.html

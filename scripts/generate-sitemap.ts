@@ -11,13 +11,16 @@ async function generateSitemap() {
         process.exit(1);
     }
 
+    // Remove trailing slash from Strapi URL if present to avoid double slashes
+    const cleanStrapiUrl = strapiUrl.replace(/\/$/, '');
+
     try {
         const params = new URLSearchParams();
         params.append('fields[0]', 'handle');
         params.append('fields[1]', 'updatedAt');
 
         const response = await fetch(
-            `${strapiUrl}/api/blog-posts?${params.toString()}`,
+            `${cleanStrapiUrl}/api/blog-posts?${params.toString()}`,
             {
                 headers: {
                     Authorization: `Bearer ${strapiToken}`,

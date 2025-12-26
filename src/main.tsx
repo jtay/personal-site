@@ -10,28 +10,31 @@ import { StrapiProvider } from './context/StrapiContext'
 import { Blog } from './pages/Blog'
 import { BlogPost } from './pages/BlogPost'
 import { FormspreeProvider } from '@formspree/react'
+import { HelmetProvider } from 'react-helmet-async'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <FormspreeProvider project={import.meta.env.VITE_FORMSPREE_PROJECT_ID!}>
-      <StrapiProvider>
-        <AppProvider i18n={enTranslations}>
-          <TopBar>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:handle" element={<BlogPost />} />
-              </Routes>
-            </BrowserRouter>
-            <div
-              style={{
-                height: '64px'
-              }}
+    <HelmetProvider>
+      <FormspreeProvider project={import.meta.env.VITE_FORMSPREE_PROJECT_ID!}>
+        <StrapiProvider>
+          <AppProvider i18n={enTranslations}>
+            <TopBar>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:handle" element={<BlogPost />} />
+                </Routes>
+              </BrowserRouter>
+              <div
+                style={{
+                  height: '64px'
+                }}
               >&nbsp;</div>
-          </TopBar>
-        </AppProvider>
-      </StrapiProvider>
-    </FormspreeProvider>
+            </TopBar>
+          </AppProvider>
+        </StrapiProvider>
+      </FormspreeProvider>
+    </HelmetProvider>
   </StrictMode>,
 )

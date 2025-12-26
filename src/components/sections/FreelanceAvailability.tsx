@@ -10,6 +10,7 @@ import { formatShortMonthYear } from '../../utils/formatShortMonthYear'
 import { useStrapi } from '../../context/StrapiContext'
 import { useEffect, useState } from 'react'
 import { LoadingCard } from '../core/LoadingCard'
+import { HomepageContactForm } from '../forms/HomepageContactForm'
 
 type Availability = 'AVAILABLE' | 'IN_PROJECT' | 'UNAVAILABLE'
 type CurrentAvailability = {
@@ -56,6 +57,7 @@ export const FreelanceAvailability = () => {
   const [ctaText, setCtaText] = useState<string>('');
   const [ctaEnabled, setCtaEnabled] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // Example of fetching data from Strapi
@@ -110,10 +112,14 @@ export const FreelanceAvailability = () => {
         {currentAvailability?.message && (
           <Text as="p">{currentAvailability.message}</Text>
         )}
-        <Button fullWidth variant="primary" disabled={!ctaEnabled}>
+        <Button fullWidth variant="primary" disabled={!ctaEnabled} onClick={() => setModalOpen(true)}>
           {ctaText}
         </Button>
       </BlockStack>
+      <HomepageContactForm
+        active={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </Card>
   )
 }

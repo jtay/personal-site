@@ -1,0 +1,59 @@
+{
+  "forms": {
+    "homepageContact": {
+      "name": "Homepage Contact Form",
+      "fields": {
+        "name": {
+          "type": "text",
+          "required": true
+        },
+        "email": {
+          "type": "email",
+          "required": true
+        },
+        "company": {
+          "type": "text",
+          "required": true
+        },
+        "website": {
+          "type": "url",
+          "required": false
+        },
+        "platform": {
+          "type": "text",
+          "required": true
+        },
+        "teamSize": {
+          "type": "text",
+          "required": false
+        },
+        "monthlyRevenue": {
+          "type": "text",
+          "required": false
+        },
+        "budget": {
+          "type": "text",
+          "required": true
+        },
+        "projectType": {
+          "type": "text",
+          "required": true
+        },
+        "timeline": {
+          "type": "text",
+          "required": true
+        },
+        "message": {
+          "type": "text",
+          "required": true
+        }
+      },
+      "actions": [
+        {
+          "type": "email",
+          "to": "jaydon.us@gmail.com"
+        }
+      ]
+    }
+  }
+}

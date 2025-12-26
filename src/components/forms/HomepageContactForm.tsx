@@ -477,10 +477,9 @@ export const HomepageContactForm = ({ active, onClose }: SteppedContactFormModal
       open={active}
       onClose={onClose}
       title={state.succeeded ? "Success!" : "Let's Build Something Amazing"}
-      /** @ts-expect-error */
       primaryAction={getPrimaryAction()}
       secondaryActions={getSecondaryActions()}
-      large
+      size="large"
     >
       <Modal.Section>
         <div ref={modalContentRef}>

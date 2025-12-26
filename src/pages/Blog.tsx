@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router'
 import { useBlogFilters } from '../hooks/useBlogFilters'
 import { useBlogPosts } from '../hooks/useBlogPosts'
 import { useCategories } from '../hooks/useCategories'
+import { SEO } from '../components/SEO'
+import { getAbsoluteUrl } from '../utils/url'
 
 // Generate years from 2010 to current year
 const getAvailableYears = (): number[] => {
@@ -20,7 +22,7 @@ const getAvailableYears = (): number[] => {
 export const Blog = () => {
   const navigate = useNavigate()
   const { strapi } = useStrapi()
-  
+
   // Filter state management
   const {
     selectedCategoryIds,
@@ -55,9 +57,9 @@ export const Blog = () => {
   const availableYears = getAvailableYears()
 
   // Check if any filters are active
-  const hasActiveFilters = 
-    selectedCategoryIds.length > 0 || 
-    selectedYears.length > 0 || 
+  const hasActiveFilters =
+    selectedCategoryIds.length > 0 ||
+    selectedYears.length > 0 ||
     searchQuery.trim() !== ''
 
   // Format number with commas
@@ -114,84 +116,92 @@ export const Blog = () => {
   }
 
   return (
-    <Page 
-      /** @ts-expect-error */
-      title={(
-        <BlockStack>
-          <Text variant="headingLg" as="h1">
-            All Posts
-          </Text>
-          <Text variant="bodyMd" as="p" tone="subdued">
-            {getSubtitle()}
-          </Text>
-        </BlockStack>
-      )} 
-      backAction={{
-        onAction: () => navigate('/')
-      }}
-    >
-      <BlockStack gap="400">
-        <Grid>
-          <Grid.Cell columnSpan={{ xs: 6, sm: 4, md: 4, lg: 8, xl: 8 }}>
-            <BlockStack gap="400">
-              {postsLoading ? (
-                <LoadingCard />
-              ) : posts.length === 0 ? (
-                <Card>
-                  <BlockStack gap="200">
-                    <Text variant="bodyMd" as="p">
-                      No posts found matching your filters.
-                    </Text>
-                    {hasActiveFilters && (
-                      <Button onClick={handleClearFilters}>
-                        Clear filters
-                      </Button>
+    <>
+      <SEO
+        title="Blog"
+        description="Read the latest thoughts on software engineering and freelance work."
+        url={getAbsoluteUrl('blog')}
+        type="website"
+      />
+      <Page
+        /** @ts-expect-error */
+        title={(
+          <BlockStack>
+            <Text variant="headingLg" as="h1">
+              All Posts
+            </Text>
+            <Text variant="bodyMd" as="p" tone="subdued">
+              {getSubtitle()}
+            </Text>
+          </BlockStack>
+        )}
+        backAction={{
+          onAction: () => navigate('/')
+        }}
+      >
+        <BlockStack gap="400">
+          <Grid>
+            <Grid.Cell columnSpan={{ xs: 6, sm: 4, md: 4, lg: 8, xl: 8 }}>
+              <BlockStack gap="400">
+                {postsLoading ? (
+                  <LoadingCard />
+                ) : posts.length === 0 ? (
+                  <Card>
+                    <BlockStack gap="200">
+                      <Text variant="bodyMd" as="p">
+                        No posts found matching your filters.
+                      </Text>
+                      {hasActiveFilters && (
+                        <Button onClick={handleClearFilters}>
+                          Clear filters
+                        </Button>
+                      )}
+                    </BlockStack>
+                  </Card>
+                ) : (
+                  <BlockStack gap="400">
+                    <BlockStack gap="400">
+                      {posts.map((post) => (
+                        <BlogPostCard key={post.documentId} post={post} />
+                      ))}
+                    </BlockStack>
+
+                    {totalPages > 1 && (
+                      <InlineStack align="center">
+                        <Pagination
+                          hasPrevious={currentPage > 1}
+                          onPrevious={handlePreviousPage}
+                          hasNext={currentPage < totalPages}
+                          onNext={handleNextPage}
+                          label={`Page ${currentPage} of ${totalPages}`}
+                        />
+                      </InlineStack>
                     )}
                   </BlockStack>
-                </Card>
-              ) : (
-                <BlockStack gap="400">
-                  <BlockStack gap="400">
-                    {posts.map((post) => (
-                      <BlogPostCard key={post.documentId} post={post} />
-                    ))}
-                  </BlockStack>
-                  
-                  {totalPages > 1 && (
-                    <InlineStack align="center">
-                      <Pagination
-                        hasPrevious={currentPage > 1}
-                        onPrevious={handlePreviousPage}
-                        hasNext={currentPage < totalPages}
-                        onNext={handleNextPage}
-                        label={`Page ${currentPage} of ${totalPages}`}
-                      />
-                    </InlineStack>
-                  )}
-                </BlockStack>
-              )}
-            </BlockStack>
-          </Grid.Cell>
-          
-          <Grid.Cell columnSpan={{ xs: 6, sm: 2, md: 2, lg: 4, xl: 4 }}>
-            <BlockStack gap="300">
-              {!categoriesLoading && categories.length > 0 && (
-                <BlogFilters
-                  categories={categories}
-                  selectedCategoryIds={selectedCategoryIds}
-                  onCategoryChange={handleCategoryChange}
-                  years={availableYears}
-                  selectedYears={selectedYears}
-                  onYearChange={handleYearChange}
-                  searchQuery={searchQuery}
-                  onSearchChange={handleSearchChange}
-                  onClearFilters={handleClearFilters}
-                />
-              )}
-            </BlockStack>
-          </Grid.Cell>
-        </Grid>
-      </BlockStack>
-    </Page>
+                )}
+              </BlockStack>
+            </Grid.Cell>
+
+            <Grid.Cell columnSpan={{ xs: 6, sm: 2, md: 2, lg: 4, xl: 4 }}>
+              <BlockStack gap="300">
+                {!categoriesLoading && categories.length > 0 && (
+                  <BlogFilters
+                    categories={categories}
+                    selectedCategoryIds={selectedCategoryIds}
+                    onCategoryChange={handleCategoryChange}
+                    years={availableYears}
+                    selectedYears={selectedYears}
+                    onYearChange={handleYearChange}
+                    searchQuery={searchQuery}
+                    onSearchChange={handleSearchChange}
+                    onClearFilters={handleClearFilters}
+                  />
+                )}
+              </BlockStack>
+            </Grid.Cell>
+          </Grid>
+        </BlockStack>
+      </Page>
+    </>
   )
 }

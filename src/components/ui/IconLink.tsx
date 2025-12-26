@@ -22,13 +22,13 @@ export const IconLink = ({ icon: Icon, title, onClick, url }: IconLinkProps) => 
       minWidth="96px"
     >
       <BlockStack align="center">
+        {/** @ts-expect-error Button can handle elements */}
         <Button
           variant="tertiary"
           onClick={onClick ? onClick : undefined}
           url={url ? url : undefined}
           target="_blank"
         >
-          {/** @ts-expect-error Button can handle elements */}
           <Box padding="050">
             <BlockStack gap="100" align="center">
               {Icon && (

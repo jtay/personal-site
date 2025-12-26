@@ -1,4 +1,4 @@
-import { BlockStack, Card, Text, Checkbox, Button, TextField, Tag, InlineStack } from "@shopify/polaris"
+import { BlockStack, Card, Text, Checkbox, Button, TextField, Tag, InlineStack, ButtonGroup } from "@shopify/polaris"
 import { useState, useEffect, useCallback, useRef } from "react"
 
 type Category = {
@@ -181,14 +181,18 @@ export const BlogFilters = ({
                         
                         {/* Year Checkboxes */}
                         <BlockStack gap="200">
-                            {years.map((year) => (
-                                <Checkbox
-                                    key={year}
-                                    label={String(year)}
-                                    checked={selectedYears.includes(year)}
-                                    onChange={() => handleYearToggle(year)}
-                                />
-                            ))}
+                            <ButtonGroup>
+                                {years.map((year) => (
+                                    <Button
+                                        key={year}
+                                        disabled={selectedYears.includes(year)}
+                                        onClick={() => handleYearToggle(year)}
+                                        variant="tertiary"
+                                    >
+                                        {String(year)}
+                                    </Button>
+                                ))}
+                            </ButtonGroup>
                         </BlockStack>
                     </BlockStack>
                 )}

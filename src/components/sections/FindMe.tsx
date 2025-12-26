@@ -1,6 +1,6 @@
 import { BlockStack, Card, InlineStack, Text } from '@shopify/polaris'
 import { IconLink } from '../ui/IconLink'
-import { FaGithub, FaNpm, FaShopify } from 'react-icons/fa'
+import { FaEnvelope, FaGithub, FaNpm, FaShopify } from 'react-icons/fa'
 import type { IconLinkProps } from '../ui/IconLink'
 import { EmailIcon } from '@shopify/polaris-icons'
 
@@ -17,7 +17,7 @@ const links: IconLinkProps[] = [
   },
   {
     title: 'Email',
-    icon: EmailIcon,
+    icon: FaEnvelope,
     url: 'https://github.com/jtay',
   },
   {

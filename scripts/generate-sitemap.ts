@@ -12,8 +12,12 @@ async function generateSitemap() {
     }
 
     try {
+        const params = new URLSearchParams();
+        params.append('fields[0]', 'handle');
+        params.append('fields[1]', 'updatedAt');
+
         const response = await fetch(
-            `${strapiUrl}/api/blog-posts?fields[0]=handle&fields[1]=updatedAt`,
+            `${strapiUrl}/api/blog-posts?${params.toString()}`,
             {
                 headers: {
                     Authorization: `Bearer ${strapiToken}`,
@@ -22,7 +26,8 @@ async function generateSitemap() {
         );
 
         if (!response.ok) {
-            throw new Error(`Strapi API returned ${response.status}`);
+            const errorText = await response.text();
+            throw new Error(`Strapi API returned ${response.status}: ${errorText}`);
         }
 
         const { data } = await response.json();
@@ -42,20 +47,18 @@ async function generateSitemap() {
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
-  ${data
-                .map(
-                    (post: any) => {
-                        const handle = post.attributes?.handle || post.handle;
-                        const updatedAt = post.attributes?.updatedAt || post.updatedAt;
-                        return `
+  ${data.map((post: any) => {
+            const handle = post.attributes?.handle || post.handle;
+            const updatedAt = post.attributes?.updatedAt || post.updatedAt;
+            return `
   <url>
     <loc>${getUrl(`blog/${handle}`)}</loc>
     <lastmod>${updatedAt}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>`;
-                    }
-                )
+        }
+        )
                 .join('')}
 </urlset>`;
 

@@ -37,6 +37,47 @@ jobs:
         env:
           VITE_STRAPI_URL: ${{ secrets.VITE_STRAPI_URL }}
           VITE_STRAPI_TOKEN: ${{ secrets.VITE_STRAPI_TOKEN }}
+          VITE_FORMSPREE_PROJECT_ID: ${{ secrets.VITE_FORMSPREE_PROJECT_ID }}
+
+      - name: Copy index.html to 404.html
+        run: cp ./dist/index.html ./dist/404.html
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: ./dist
+          retention-days: 1
+
+  forms-deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Deploy Formspree
+        run: npx @formspree/cli deploy
+        env:
+          FORMSPREE_DEPLOY_KEY: ${{ secrets.FORMSPREE_DEPLOY_KEY }}
+
+  pages-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: ./dist
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -46,13 +87,6 @@ jobs:
         with:
           path: './dist'
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

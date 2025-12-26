@@ -1,17 +1,13 @@
 import fs from 'fs';
-import { loadEnv } from 'vite';
+import 'dotenv/config';
 
 async function generateSitemap() {
-    const mode = process.env.NODE_ENV || 'production';
-    const env = loadEnv(mode, process.cwd(), '');
-
-    const strapiUrl = env.VITE_STRAPI_URL || process.env.VITE_STRAPI_URL;
-    const strapiToken = env.VITE_STRAPI_TOKEN || process.env.VITE_STRAPI_TOKEN;
-    const siteUrl = env.VITE_BASE_URL || process.env.VITE_BASE_URL;
+    const strapiUrl = process.env.VITE_STRAPI_URL;
+    const strapiToken = process.env.VITE_STRAPI_TOKEN;
+    const siteUrl = process.env.VITE_BASE_URL;
 
     if (!strapiUrl || !strapiToken || !siteUrl) {
         console.error('Missing VITE_STRAPI_URL, VITE_STRAPI_TOKEN, or VITE_BASE_URL environment variables');
-        console.error('Available keys:', Object.keys(env).filter(k => k.startsWith('VITE_')));
         process.exit(1);
     }
 

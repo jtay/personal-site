@@ -61,6 +61,14 @@ async function generateSitemap() {
 
         fs.writeFileSync('public/sitemap.xml', sitemap);
         console.log('✅ Sitemap generated successfully!');
+
+        const robots = `User-agent: *
+Allow: /
+Sitemap: ${getUrl('sitemap.xml')}
+`;
+
+        fs.writeFileSync('public/robots.txt', robots);
+        console.log('✅ robots.txt generated successfully!');
     } catch (error) {
         console.error('❌ Error generating sitemap:', error);
         process.exit(1);

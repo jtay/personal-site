@@ -2,19 +2,18 @@ import {
   BlockStack,
   Box,
   Button,
-  Icon,
   Text,
-  type IconSource,
 } from '@shopify/polaris'
+import type { IconType } from 'react-icons'
 
 export type IconLinkProps = {
-  icon: IconSource
+  icon: IconType
   title: string
   onClick?: () => unknown
   url?: string
 }
 
-export const IconLink = ({ icon, title, onClick, url }: IconLinkProps) => {
+export const IconLink = ({ icon: Icon, title, onClick, url }: IconLinkProps) => {
   return (
     <Box
       background="bg-fill-active"
@@ -31,11 +30,11 @@ export const IconLink = ({ icon, title, onClick, url }: IconLinkProps) => {
         >
           {/** @ts-expect-error Button can handle elements */}
           <Box padding="050">
-            <BlockStack gap="100">
-              {icon && (
-                <Text as="h1" variant="headingLg">
-                  <Icon source={icon} />
-                </Text>
+            <BlockStack gap="100" align="center">
+              {Icon && (
+                <div style={{ textAlign: 'center' }}>
+                  <Icon size="24" />
+                </div>
               )}
               {title && (
                 <Text as="h5" variant="headingXs" tone="subdued">

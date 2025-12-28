@@ -17,6 +17,7 @@ import {
 import {
   PersonIcon,
   EmailIcon,
+  PhoneIcon,
   StoreIcon,
   GlobeIcon,
   NoteIcon,
@@ -25,6 +26,7 @@ import {
 interface FormData {
   name: string;
   email: string;
+  phone: string;
   company: string;
   website: string;
   platform: string;
@@ -48,6 +50,7 @@ interface SteppedContactFormModalProps {
 const INITIAL_FORM_DATA: FormData = {
   name: '',
   email: '',
+  phone: '',
   company: '',
   website: '',
   platform: '',
@@ -157,8 +160,8 @@ const isValidURL = (urlString: string): boolean => {
   });
 };
 
-// Helper function to normalize URL with protocol
-const normalizeURL = (urlString: string): string => {
+// Helper function to normalise URL with protocol
+const normaliseURL = (urlString: string): string => {
   if (!urlString) return '';
   
   const trimmed = urlString.trim();
@@ -287,15 +290,16 @@ export const HomepageContactForm = ({ active, onClose }: SteppedContactFormModal
         throw new Error('Form URL is not configured');
       }
 
-      // Normalize the website URL before submission
-      const normalizedWebsite = formData.website ? normalizeURL(formData.website) : '';
+      // Normalise the website URL before submission
+      const normalisedWebsite = formData.website ? normaliseURL(formData.website) : '';
 
       // Create FormData object
       const formDataToSubmit = new FormData();
       formDataToSubmit.append('name', formData.name);
       formDataToSubmit.append('email', formData.email);
+      formDataToSubmit.append('phone', formData.phone);
       formDataToSubmit.append('company', formData.company);
-      formDataToSubmit.append('website', normalizedWebsite);
+      formDataToSubmit.append('website', normalisedWebsite);
       formDataToSubmit.append('platform', formData.platform);
       formDataToSubmit.append('teamSize', formData.teamSize);
       formDataToSubmit.append('monthlyRevenue', formData.monthlyRevenue);
@@ -438,6 +442,17 @@ export const HomepageContactForm = ({ active, onClose }: SteppedContactFormModal
               requiredIndicator
               error={fieldErrors.email}
               prefix={<Icon source={EmailIcon} />}
+            />
+
+            <TextField
+              label="Phone Number (optional)"
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleFieldChange('phone')}
+              autoComplete="tel"
+              prefix={<Icon source={PhoneIcon} />}
+              error={fieldErrors.phone}
             />
 
             <TextField

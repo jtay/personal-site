@@ -11,6 +11,10 @@
           "type": "email",
           "required": true
         },
+        "phone": {
+          "type": "text",
+          "required": true
+        },        
         "company": {
           "type": "text",
           "required": true

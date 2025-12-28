@@ -533,6 +533,45 @@ export interface ApiFreelanceConfigFreelanceConfig
   }
 }
 
+export interface ApiPortfolioPortfolio extends Struct.CollectionTypeSchema {
+  collectionName: 'portfolios'
+  info: {
+    displayName: 'Portfolio'
+    pluralName: 'portfolios'
+    singularName: 'portfolio'
+  }
+  options: {
+    draftAndPublish: true
+  }
+  attributes: {
+    brandName: Schema.Attribute.String
+    content: Schema.Attribute.Blocks
+    createdAt: Schema.Attribute.DateTime
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private
+    handle: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique
+    locale: Schema.Attribute.String & Schema.Attribute.Private
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::portfolio.portfolio'
+    > &
+      Schema.Attribute.Private
+    logo_leaderboard: Schema.Attribute.Media<'images'>
+    logo_square: Schema.Attribute.Media<'images'>
+    monthEnd: Schema.Attribute.Date
+    monthStart: Schema.Attribute.Date
+    publishedAt: Schema.Attribute.DateTime
+    subtitle: Schema.Attribute.String
+    title: Schema.Attribute.String
+    updatedAt: Schema.Attribute.DateTime
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private
+    url: Schema.Attribute.String
+  }
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases'
@@ -1046,6 +1085,7 @@ declare module '@strapi/strapi' {
       'api::blog-post.blog-post': ApiBlogPostBlogPost
       'api::category.category': ApiCategoryCategory
       'api::freelance-config.freelance-config': ApiFreelanceConfigFreelanceConfig
+      'api::portfolio.portfolio': ApiPortfolioPortfolio
       'plugin::content-releases.release': PluginContentReleasesRelease
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction
       'plugin::i18n.locale': PluginI18NLocale

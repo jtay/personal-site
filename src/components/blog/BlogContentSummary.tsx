@@ -53,8 +53,8 @@ export const BlogContentSummary = ({
   const summaryText = summaryBlocks.join(' ')
 
   // Optionally truncate if still too long (e.g., very long paragraphs)
-  const truncated = summaryText.length > 300 
-    ? summaryText.slice(0, 297) + '...' 
+  const truncated = summaryText.length > maxLines * 64 
+    ? summaryText.slice(0, maxLines * 64) + '...' 
     : summaryText
 
   return (

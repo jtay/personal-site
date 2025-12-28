@@ -9,13 +9,11 @@ import { TopBar } from './components/core/TopBar'
 import { StrapiProvider } from './context/StrapiContext'
 import { Blog } from './pages/Blog'
 import { BlogPost } from './pages/BlogPost'
-import { FormspreeProvider } from '@formspree/react'
 import { HelmetProvider } from 'react-helmet-async'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
-      <FormspreeProvider project={import.meta.env.VITE_FORMSPREE_PROJECT_ID!}>
         <StrapiProvider>
           <AppProvider i18n={enTranslations}>
             <TopBar>
@@ -34,7 +32,6 @@ createRoot(document.getElementById('root')!).render(
             </TopBar>
           </AppProvider>
         </StrapiProvider>
-      </FormspreeProvider>
     </HelmetProvider>
   </StrictMode>,
 )

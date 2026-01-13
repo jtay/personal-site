@@ -43,7 +43,7 @@ export const AboutMe = () => {
           </BlockStack>
         </Box>
         <List>
-          <List.Item>14yrs experience in web development</List.Item>
+          <List.Item>11yrs experience in web development</List.Item>
           <List.Item>Specialised in Shopify Plus</List.Item>
           <List.Item>Shopify Academy Certified</List.Item>
           <List.Item>More than 5 delighted freelance clients</List.Item>

@@ -1,0 +1,10 @@
+[
+  {
+    "slug": "upscaler",
+    "title": "Image Upscaler",
+    "subtitle": "Upscale images using AI.",
+    "image": "/assets/tools/upscaler.png",
+    "htmlPath": "tools/upscaler.html",
+    "color": "#4a90e2"
+  }
+]

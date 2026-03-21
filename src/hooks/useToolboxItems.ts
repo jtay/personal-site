@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { ToolboxItemDocument } from '../types/toolbox';
-import type { StrapiCollectionResponse } from '../types/strapi';
+import toolboxData from '../data/toolbox.json';
 
 interface UseToolboxItemsParams {
-  strapi: any;
+  strapi?: any; // Kept for compatibility but not used
 }
 
 interface UseToolboxItemsReturn {
@@ -14,43 +14,16 @@ interface UseToolboxItemsReturn {
 
 export const useToolboxItems = ({
   strapi
-}: UseToolboxItemsParams): UseToolboxItemsReturn => {
+}: UseToolboxItemsParams = {}): UseToolboxItemsReturn => {
   const [items, setItems] = useState<ToolboxItemDocument[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const fetchToolboxItems = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const toolboxItems = strapi.collection('api/toolbox-items');
-        
-        const queryParams: any = {
-          populate: {
-            image: true
-          },
-          sort: ['title:asc'],
-          pagination: {
-            pageSize: 100 // Fetch all for now
-          }
-        };
-        
-        const response = await toolboxItems.find(queryParams) as StrapiCollectionResponse<ToolboxItemDocument>;
-
-        setItems(response.data);
-      } catch (err) {
-        console.error('Error fetching toolbox items:', err);
-        setError(err instanceof Error ? err : new Error('Failed to fetch toolbox items'));
-        setItems([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchToolboxItems();
-  }, [strapi]);
+    // Synchronously set from local JSON
+    setItems(toolboxData as ToolboxItemDocument[]);
+    setIsLoading(false);
+  }, []);
 
   return {
     items,

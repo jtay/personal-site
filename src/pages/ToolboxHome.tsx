@@ -6,8 +6,7 @@ import { Link } from 'react-router';
 import { SEO } from '../components/SEO';
 
 export const ToolboxHome = () => {
-  const { strapi, getImageUrl } = useStrapi();
-  const { items, isLoading, error } = useToolboxItems({ strapi });
+  const { items, isLoading, error } = useToolboxItems();
 
   if (error) {
     return (
@@ -33,7 +32,7 @@ export const ToolboxHome = () => {
           ) : (
             <Grid>
               {items.map((item) => (
-                <Grid.Cell key={item.id} columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
+                <Grid.Cell key={item.slug} columnSpan={{ xs: 6, sm: 3, md: 3, lg: 4, xl: 4 }}>
                   <Link to={`/toolbox/${item.slug}`} style={{ textDecoration: 'none' }}>
                     <Card padding="400">
                       <BlockStack gap="300">
@@ -50,7 +49,7 @@ export const ToolboxHome = () => {
                             }}
                           >
                             <img
-                              src={getImageUrl(item.image.url)}
+                              src={item.image}
                               alt={item.title}
                               style={{
                                 maxWidth: '100%',

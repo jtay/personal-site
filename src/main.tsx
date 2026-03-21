@@ -16,8 +16,12 @@ import { HelmetProvider } from 'react-helmet-async'
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/toolbox" replace />} />
-      <Route path="/polaris" element={<Home />} />
+      <Route path="/" element={
+        <TopBar>
+          <Home />
+          <div style={{ height: '64px' }}>&nbsp;</div>
+        </TopBar>
+      } />
       <Route path="/blog" element={
         <TopBar>
           <Blog />

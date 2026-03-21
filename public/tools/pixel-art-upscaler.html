@@ -4,163 +4,74 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pixel Upscaler</title>
+<link rel="stylesheet" href="shared.css">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: system-ui, sans-serif;
-    background: #f5f5f5;
-    color: #111;
-    min-height: 100vh;
-    padding: 40px 24px;
-  }
-
-  h1 { font-size: 18px; font-weight: 600; margin-bottom: 24px; }
-
   #dropzone {
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    padding: 40px;
+    border: 1.5px dashed var(--border);
+    border-radius: 12px;
+    padding: 48px;
     text-align: center;
-    color: #888;
-    font-size: 14px;
+    color: var(--muted);
     cursor: pointer;
-    margin-bottom: 16px;
-    transition: border-color 0.15s, background 0.15s;
+    background: var(--surface);
+    transition: all 0.15s ease;
   }
-  #dropzone.over { border-color: #555; background: #eee; }
-  #file-input { display: none; }
-
-  #toolbar {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
+  #dropzone:hover, #dropzone.over {
+    border-color: var(--accent);
+    background: rgba(59, 130, 246, 0.05);
+    color: var(--text);
   }
-
-  #toolbar label { font-size: 13px; color: #555; }
-
-  #toolbar select {
-    font-size: 13px;
-    padding: 5px 6px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #fff;
-  }
-
-  #apply-all {
-    font-size: 13px;
-    padding: 5px 12px;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  #apply-all:hover { background: #eee; }
-
-  #save-all {
-    font-size: 13px;
-    padding: 5px 12px;
-    background: #111;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: auto;
-  }
-  #save-all:hover { background: #333; }
-
-  #images { display: flex; flex-direction: column; gap: 10px; }
-
-  .row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 10px 14px;
-  }
-
-  .thumb {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-    image-rendering: pixelated;
-    background: repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%) 0 0 / 12px 12px;
-    border-radius: 3px;
-    flex-shrink: 0;
-  }
-
-  .name {
-    flex: 1;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-  }
-
-  .dims { font-size: 11px; color: #999; white-space: nowrap; }
-
-  .row select {
-    font-size: 13px;
-    padding: 4px 6px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #fff;
-    cursor: pointer;
-  }
-
-  .dl {
-    font-size: 13px;
-    padding: 5px 12px;
-    background: #111;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .dl:hover { background: #333; }
-
   .rm {
-    font-size: 16px;
-    color: #bbb;
+    font-size: 18px;
+    color: var(--muted);
     background: none;
     border: none;
     cursor: pointer;
-    line-height: 1;
-    padding: 0 2px;
+    transition: color .15s;
+    padding: 4px;
   }
-  .rm:hover { color: #555; }
+  .rm:hover { color: #f87171; }
+  .name-group { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dims { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
 </style>
 </head>
 <body>
 
-<h1>Pixel Art Upscaler</h1>
+<div class="tool-container" style="max-width: 800px;">
+  <h1>Pixel Art Upscaler</h1>
 
-<div id="dropzone">
-  Drop PNGs here or click to browse
-  <input type="file" id="file-input" accept="image/png" multiple>
+  <div class="tool-card" style="margin-bottom: 24px; padding: 0; overflow: hidden;">
+    <div id="dropzone" class="tool-section">
+      <p><strong>Drop PNGs here</strong> or click to browse</p>
+      <div style="margin-top: 16px;">
+        <button class="btn btn-secondary" onclick="event.stopPropagation(); loadExample()">Use Example Asset</button>
+      </div>
+      <input type="file" id="file-input" accept="image/png" multiple style="display: none;">
+    </div>
+
+    <div id="toolbar" class="tool-section" style="display:none; border-bottom: none; background: var(--surface2);">
+      <div class="form-row" style="margin-bottom: 0;">
+        <div class="row-flex">
+          <label class="label-caps">Global Multiplier</label>
+          <select id="global-mult">
+            <option value="2">x2</option>
+            <option value="3">x3</option>
+            <option value="4" selected>x4</option>
+            <option value="6">x6</option>
+            <option value="8">x8</option>
+            <option value="10">x10</option>
+            <option value="16">x16</option>
+          </select>
+          <button id="apply-all" class="btn btn-secondary">Apply to All</button>
+        </div>
+        <button id="save-all" class="btn btn-primary">Save All Assets</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="images" style="display: flex; flex-direction: column; gap: 12px;"></div>
 </div>
-
-<div id="toolbar">
-  <label>Apply to all:</label>
-  <select id="global-mult">
-    <option value="2">x2</option>
-    <option value="3">x3</option>
-    <option value="4" selected>x4</option>
-    <option value="6">x6</option>
-    <option value="8">x8</option>
-    <option value="10">x10</option>
-    <option value="16">x16</option>
-  </select>
-  <button id="apply-all">Apply</button>
-  <button id="save-all">Save all</button>
-</div>
-
-<div id="images"></div>
 
 <script>
   const dropzone = document.getElementById('dropzone');
@@ -169,6 +80,17 @@
   const toolbar = document.getElementById('toolbar');
   const globalMult = document.getElementById('global-mult');
   const rows = []; // { sel, img, file }
+
+  async function loadExample() {
+    try {
+      const res = await fetch('/assets/tools/pixel-art.png');
+      const blob = await res.blob();
+      const file = new File([blob], 'pixel-art.png', { type: 'image/png' });
+      addImage(file);
+    } catch (e) {
+      console.error('Failed to load example', e);
+    }
+  }
 
   dropzone.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', e => { handleFiles(e.target.files); fileInput.value = ''; });
@@ -197,11 +119,16 @@
       const img = new Image();
       img.onload = () => {
         const row = document.createElement('div');
-        row.className = 'row';
+        row.className = 'tool-list-row';
 
         const thumb = document.createElement('img');
-        thumb.className = 'thumb';
+        thumb.className = 'tool-list-row-thumb pixelated';
         thumb.src = e.target.result;
+        // pixel checkerboard pattern for alpha
+        thumb.style.background = 'repeating-conic-gradient(#1e1e28 0% 25%, #2a2a38 0% 50%) 0 0 / 12px 12px';
+
+        const nameGroup = document.createElement('div');
+        nameGroup.className = 'name-group';
 
         const name = document.createElement('span');
         name.className = 'name';
@@ -209,6 +136,8 @@
 
         const dims = document.createElement('span');
         dims.className = 'dims';
+
+        nameGroup.append(name, dims);
 
         const sel = document.createElement('select');
         [2,3,4,6,8,10,16].forEach(n => {
@@ -226,7 +155,7 @@
         sel.addEventListener('change', updateDims);
 
         const dl = document.createElement('button');
-        dl.className = 'dl';
+        dl.className = 'btn btn-success';
         dl.textContent = 'Save';
         dl.addEventListener('click', () => saveImage(img, file, +sel.value));
 
@@ -240,10 +169,10 @@
           if (rows.length === 0) toolbar.style.display = 'none';
         });
 
-        row.append(thumb, name, dims, sel, dl, rm);
+        row.append(thumb, nameGroup, sel, dl, rm);
         imageList.appendChild(row);
         rows.push({ sel, img, file, updateDims });
-        toolbar.style.display = 'flex';
+        toolbar.style.display = 'block';
       };
       img.src = e.target.result;
     };

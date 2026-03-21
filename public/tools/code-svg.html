@@ -3,25 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TS → SVG Renderer</title>
+<title>TS → SVG Renderer</title><link rel="stylesheet" href="shared.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #0e0e12;
-    --surface: #16161d;
-    --surface2: #1e1e28;
-    --border: #2a2a38;
-    --accent: #7c6af7;
-    --accent2: #c084fc;
-    --text: #e2e2f0;
-    --muted: #6b6b88;
-    --success: #34d399;
-    --warn: #f59e0b;
-
-    /* Default syntax palette */
+    /* Synax specific overrides */
     --tok-bg: #0d1117;
     --tok-fg: #e6edf3;
     --tok-keyword: #ff7b72;
@@ -41,72 +26,23 @@
   }
 
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    min-height: 100vh;
     display: grid;
     grid-template-rows: auto 1fr;
     grid-template-columns: 360px 1fr;
-    grid-template-areas: "header header" "sidebar main";
+    grid-template-areas: "tool-header tool-header" "tool-sidebar tool-main";
   }
 
   /* ── HEADER ── */
-  header {
-    grid-area: header;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 24px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
+  .tool-header {
+    grid-area: tool-header;
   }
-
-  header h1 {
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: .04em;
-    color: var(--text);
-  }
-
-  header h1 span { color: var(--accent); }
-
-  .badge {
-    background: var(--accent);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .08em;
-    padding: 2px 7px;
-    border-radius: 99px;
-    text-transform: uppercase;
-  }
-
-  .header-actions { margin-left: auto; display: flex; gap: 8px; }
 
   /* ── SIDEBAR ── */
-  aside {
-    grid-area: sidebar;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
+  .tool-sidebar {
+    grid-area: tool-sidebar;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-  }
-
-  .section {
-    border-bottom: 1px solid var(--border);
-    padding: 16px;
-  }
-
-  .section-title {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
   }
 
   /* Font upload */
@@ -119,32 +55,14 @@
     transition: border-color .2s, background .2s;
     position: relative;
   }
-  .upload-zone:hover { border-color: var(--accent); background: rgba(124,106,247,.05); }
+  .upload-zone:hover { border-color: var(--accent); background: rgba(59, 130, 246,.05); }
   .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
   .upload-zone .icon { font-size: 20px; margin-bottom: 4px; }
   .upload-zone p { font-size: 12px; color: var(--muted); }
   .upload-zone p strong { color: var(--text); }
   #font-status { font-size: 11px; color: var(--success); margin-top: 8px; display: none; }
 
-  /* Font size / padding */
-  label.row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  label.row span { color: var(--text); font-weight: 500; min-width: 28px; text-align: right; }
-  input[type=range] {
-    -webkit-appearance: none;
-    height: 3px;
-    border-radius: 99px;
-    background: var(--border);
-    flex: 1;
-    margin: 0 10px;
-    cursor: pointer;
-  }
+  /* Range Sliders */
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 13px; height: 13px;
@@ -153,179 +71,13 @@
     cursor: pointer;
   }
 
-  /* Toggle */
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .toggle {
-    position: relative;
-    width: 34px; height: 18px;
-    cursor: pointer;
-  }
-  .toggle input { opacity: 0; position: absolute; }
-  .toggle-track {
-    position: absolute; inset: 0;
-    background: var(--border);
-    border-radius: 99px;
-    transition: background .2s;
-  }
-  .toggle input:checked ~ .toggle-track { background: var(--accent); }
-  .toggle-thumb {
-    position: absolute;
-    top: 3px; left: 3px;
-    width: 12px; height: 12px;
-    background: #fff;
-    border-radius: 50%;
-    transition: left .2s;
-  }
-  .toggle input:checked ~ .toggle-thumb { left: 19px; }
-
-  /* Palette */
-  .palette-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
-  .swatch {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 5px 8px;
-    cursor: pointer;
-    transition: border-color .15s;
-  }
-  .swatch:hover { border-color: var(--accent); }
-  .swatch-dot {
-    width: 14px; height: 14px;
-    border-radius: 3px;
-    border: 1px solid rgba(255,255,255,.12);
-    flex-shrink: 0;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  .swatch-dot input[type=color] {
-    position: absolute;
-    inset: -4px;
-    opacity: 0;
-    cursor: pointer;
-    width: calc(100% + 8px);
-    height: calc(100% + 8px);
-  }
-  .swatch-label { font-size: 10px; color: var(--muted); line-height: 1.2; }
-
-  /* Preset buttons */
-  .presets { display: flex; flex-wrap: wrap; gap: 6px; }
-  .preset-btn {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .04em;
-    padding: 4px 10px;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--muted);
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .preset-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-  /* Code input */
-  textarea#code-input {
-    width: 100%;
-    height: 220px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    line-height: 1.6;
-    padding: 12px;
-    resize: vertical;
-    outline: none;
-    transition: border-color .15s;
-    tab-size: 2;
-  }
-  textarea#code-input:focus { border-color: var(--accent); }
-
-  /* Buttons */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 7px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all .15s;
-    letter-spacing: .02em;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #6b59e8; }
-  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-success { background: #0f3d2c; color: var(--success); border: 1px solid #1a5c40; }
-  .btn-success:hover { background: #1a5c40; }
-  .btn:disabled { opacity: .4; cursor: not-allowed; }
-  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-
   /* ── MAIN ── */
-  main {
-    grid-area: main;
+  .tool-main {
+    grid-area: tool-main;
     display: flex;
     flex-direction: column;
     background: var(--bg);
     overflow: hidden;
-  }
-
-  .toolbar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 20px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    flex-shrink: 0;
-  }
-
-  .toolbar-label {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 600;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
-
-  select.styled {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 6px;
-    outline: none;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  #resolution-display {
-    margin-left: auto;
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
   }
 
   .preview-area {
@@ -336,7 +88,7 @@
     justify-content: center;
     padding: 32px;
     background:
-      radial-gradient(ellipse 60% 40% at 70% 30%, rgba(124,106,247,.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 70% 30%, rgba(59, 130, 246, .06) 0%, transparent 60%),
       repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(255,255,255,.015) 24px, rgba(255,255,255,.015) 25px),
       repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(255,255,255,.015) 24px, rgba(255,255,255,.015) 25px);
   }
@@ -395,9 +147,9 @@
 </head>
 <body>
 
-<header>
+<header class="tool-header">
   <h1><span>TS</span> → SVG Renderer</h1>
-  <div class="badge">TypeScript</div>
+  <div class="badge badge-accent">TypeScript</div>
   <div class="header-actions">
     <button class="btn btn-secondary" onclick="copyAsSVG()">⎘ Copy SVG</button>
     <button class="btn btn-primary" id="render-btn" onclick="renderCode()">▶ Render</button>
@@ -405,19 +157,19 @@
 </header>
 
 <!-- SIDEBAR -->
-<aside>
+<aside class="tool-sidebar">
 
   <!-- Code input -->
-  <div class="section">
-    <div class="section-title">TypeScript Code</div>
-    <textarea id="code-input" spellcheck="false" placeholder="// Paste your TypeScript here…
+  <div class="tool-section">
+    <div class="tool-section-title">TypeScript Code</div>
+    <textarea id="code-input" spellcheck="false" class="tool-input" style="height: 220px; width:100%" placeholder="// Paste your TypeScript here…
 interface User {
   id: number;
   name: string;
 }
 
 const greet = (user: User): string => {
-  return \`Hello, \${user.name}!\`;
+  return `Hello, ${user.name}!`;
 };">// Example TypeScript
 interface Config {
   host: string;
@@ -425,38 +177,38 @@ interface Config {
   debug?: boolean;
 }
 
-type Handler&lt;T&gt; = (event: T) => Promise&lt;void&gt;;
+type Handler<T> = (event: T) => Promise<void>;
 
 class ApiClient {
   private readonly baseUrl: string;
-  private headers: Record&lt;string, string&gt;;
+  private headers: Record<string, string>;
 
   constructor(private config: Config) {
     this.baseUrl = `http://${config.host}:${config.port}`;
     this.headers = { 'Content-Type': 'application/json' };
   }
 
-  async get&lt;T&gt;(path: string): Promise&lt;T&gt; {
+  async get<T>(path: string): Promise<T> {
     const res = await fetch(`${this.baseUrl}${path}`, {
       method: 'GET',
       headers: this.headers,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json() as Promise&lt;T&gt;;
+    return res.json() as Promise<T>;
   }
 }
 
 // Usage
 const client = new ApiClient({ host: 'localhost', port: 3000 });
-const data = await client.get&lt;User[]&gt;('/users');</textarea>
-    <div class="btn-row">
+const data = await client.get<User[]>('/users');</textarea>
+    <div class="btn-row" style="display:flex; gap:8px; margin-top:10px;">
       <button class="btn btn-primary" style="flex:1" onclick="renderCode()">▶ Render Preview</button>
     </div>
   </div>
 
   <!-- Font -->
-  <div class="section">
-    <div class="section-title">Custom Font (TTF)</div>
+  <div class="tool-section">
+    <div class="tool-section-title">Custom Font (TTF)</div>
     <div class="upload-zone">
       <input type="file" id="font-input" accept=".ttf,.otf,.woff,.woff2" onchange="loadFont(this)">
       <div class="icon">⌥</div>
@@ -466,98 +218,94 @@ const data = await client.get&lt;User[]&gt;('/users');</textarea>
   </div>
 
   <!-- Display options -->
-  <div class="section">
-    <div class="section-title">Display</div>
+  <div class="tool-section">
+    <div class="tool-section-title">Display</div>
 
-    <label class="row">
+    <label class="form-row">
       Font size
       <input type="range" min="10" max="28" value="14" id="font-size-slider" oninput="this.nextElementSibling.textContent=this.value+'px';scheduleRender()">
       <span>14px</span>
     </label>
-    <label class="row">
+    <label class="form-row">
       Line height
       <input type="range" min="12" max="40" value="22" id="line-height-slider" oninput="this.nextElementSibling.textContent=this.value+'px';scheduleRender()">
       <span>22px</span>
     </label>
-    <label class="row">
+    <label class="form-row">
       H padding
       <input type="range" min="8" max="80" value="32" id="pad-h-slider" oninput="this.nextElementSibling.textContent=this.value+'px';scheduleRender()">
       <span>32px</span>
     </label>
-    <label class="row">
+    <label class="form-row">
       V padding
       <input type="range" min="8" max="80" value="28" id="pad-v-slider" oninput="this.nextElementSibling.textContent=this.value+'px';scheduleRender()">
       <span>28px</span>
     </label>
-    <label class="row">
+    <label class="form-row">
       Border radius
       <input type="range" min="0" max="24" value="10" id="radius-slider" oninput="this.nextElementSibling.textContent=this.value+'px';scheduleRender()">
       <span>10px</span>
     </label>
 
-    <div class="toggle-row">
-      Line numbers
+    <div class="form-row">
+      <label>Line numbers</label>
       <label class="toggle">
         <input type="checkbox" id="show-lines" checked onchange="scheduleRender()">
         <div class="toggle-track"></div>
-        <div class="toggle-thumb"></div>
       </label>
     </div>
-    <div class="toggle-row">
-      Window chrome
+    <div class="form-row">
+      <label>Window chrome</label>
       <label class="toggle">
         <input type="checkbox" id="show-chrome" checked onchange="scheduleRender()">
         <div class="toggle-track"></div>
-        <div class="toggle-thumb"></div>
       </label>
     </div>
-    <div class="toggle-row">
-      Shadow
+    <div class="form-row">
+      <label>Shadow</label>
       <label class="toggle">
         <input type="checkbox" id="show-shadow" checked onchange="scheduleRender()">
         <div class="toggle-track"></div>
-        <div class="toggle-thumb"></div>
       </label>
     </div>
-    <div class="toggle-row">
-      Transparent BG
+    <div class="form-row">
+      <label>Transparent BG</label>
       <label class="toggle">
         <input type="checkbox" id="transparent-bg" onchange="scheduleRender()">
         <div class="toggle-track"></div>
-        <div class="toggle-thumb"></div>
       </label>
     </div>
   </div>
 
   <!-- Palette presets -->
-  <div class="section">
-    <div class="section-title">Theme Presets</div>
-    <div class="presets" id="preset-btns">
-      <button class="preset-btn active" onclick="applyPreset('github-dark',this)">GitHub Dark</button>
-      <button class="preset-btn" onclick="applyPreset('one-dark',this)">One Dark</button>
-      <button class="preset-btn" onclick="applyPreset('dracula',this)">Dracula</button>
-      <button class="preset-btn" onclick="applyPreset('solarized',this)">Solarized</button>
-      <button class="preset-btn" onclick="applyPreset('nord',this)">Nord</button>
-      <button class="preset-btn" onclick="applyPreset('monokai',this)">Monokai</button>
-      <button class="preset-btn" onclick="applyPreset('light',this)">Light</button>
+  <div class="tool-section">
+    <div class="tool-section-title">Theme Presets</div>
+    <div class="tool-preset-grid" id="preset-btns">
+      <button class="tool-preset-btn active" onclick="applyPreset('github-dark',this)">GitHub Dark</button>
+      <button class="tool-preset-btn" onclick="applyPreset('one-dark',this)">One Dark</button>
+      <button class="tool-preset-btn" onclick="applyPreset('dracula',this)">Dracula</button>
+      <button class="tool-preset-btn" onclick="applyPreset('solarized',this)">Solarized</button>
+      <button class="tool-preset-btn" onclick="applyPreset('nord',this)">Nord</button>
+      <button class="tool-preset-btn" onclick="applyPreset('monokai',this)">Monokai</button>
+      <button class="tool-preset-btn" onclick="applyPreset('light',this)">Light</button>
     </div>
   </div>
 
   <!-- Palette editor -->
-  <div class="section" style="flex:1">
-    <div class="section-title">Colour Palette</div>
-    <div class="palette-grid" id="palette-grid"></div>
+  <div class="tool-section" style="flex:1">
+    <div class="tool-section-title">Colour Palette</div>
+    <div class="tool-palette-grid" id="palette-grid"></div>
   </div>
 
   <!-- Export -->
-  <div class="section">
-    <div class="section-title">Export</div>
-    <label class="row">
+  <div class="tool-section">
+    <div class="tool-section-title">Export</div>
+    <label class="form-row">
       Scale (PNG)
       <input type="range" min="1" max="4" step="0.5" value="2" id="scale-slider" oninput="this.nextElementSibling.textContent=this.value+'×'">
       <span>2×</span>
     </label>
-    <div class="btn-row">
+    <div class="btn-row" style="display:flex; gap:8px;">
       <button class="btn btn-secondary" style="flex:1" onclick="downloadSVG()">↓ SVG</button>
       <button class="btn btn-success" style="flex:1" onclick="downloadPNG()">↓ PNG</button>
     </div>
@@ -566,10 +314,10 @@ const data = await client.get&lt;User[]&gt;('/users');</textarea>
 </aside>
 
 <!-- MAIN PREVIEW -->
-<main>
+<main class="tool-main">
   <div class="toolbar">
-    <span class="toolbar-title toolbar-label">Preview</span>
-    <div id="resolution-display">—</div>
+    <span class="toolbar-title label-caps">Preview</span>
+    <div id="resolution-display" style="margin-left:auto; font-size:11px; color:var(--muted); font-family:monospace;">—</div>
   </div>
   <div class="preview-area" id="preview-area">
     <div class="empty-state" id="empty-state">
@@ -674,7 +422,7 @@ function saveState() {
     showChrome: document.getElementById('show-chrome').checked,
     showShadow: document.getElementById('show-shadow').checked,
     transparentBg: document.getElementById('transparent-bg').checked,
-    activePreset: (document.querySelector('.preset-btn.active') || {}).textContent || null,
+    activePreset: (document.querySelector('.tool-preset-btn.active') || {}).textContent || null,
     fontName: customFontName,
   };
   try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
@@ -713,7 +461,7 @@ function loadState() {
     document.getElementById('font-status').textContent = '✓ ' + state.fontName + ' (re-upload to embed in SVG)';
   }
   if (state.activePreset) {
-    document.querySelectorAll('.preset-btn').forEach(b => {
+    document.querySelectorAll('.tool-preset-btn').forEach(b => {
       b.classList.toggle('active', b.textContent === state.activePreset);
     });
   }
@@ -727,14 +475,14 @@ function buildPaletteUI() {
   grid.innerHTML = '';
   PALETTE_KEYS.forEach(({ key, label }) => {
     const div = document.createElement('div');
-    div.className = 'swatch';
+    div.className = 'tool-palette-swatch';
     div.innerHTML = `
-      <div class="swatch-dot" id="dot-${key}" style="background:${currentPalette[key]}">
+      <div class="tool-swatch-dot" id="dot-${key}" style="background:${currentPalette[key]}">
         <input type="color" value="${currentPalette[key]}" data-key="${key}"
           oninput="updateColor(this.dataset.key,this.value)"
           onchange="updateColor(this.dataset.key,this.value)">
       </div>
-      <div class="swatch-label">${label}</div>`;
+      <div class="tool-swatch-label">${label}</div>`;
     grid.appendChild(div);
   });
 }
@@ -743,7 +491,7 @@ function updateColor(key, value) {
   currentPalette[key] = value;
   const dot = document.getElementById('dot-' + key);
   if (dot) dot.style.background = value;
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tool-preset-btn').forEach(b => b.classList.remove('active'));
   saveState();
   scheduleRender();
 }
@@ -751,7 +499,7 @@ function updateColor(key, value) {
 function applyPreset(name, btn) {
   currentPalette = { ...PRESETS[name] };
   buildPaletteUI();
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tool-preset-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   saveState();
   scheduleRender();

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Upscaler</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, sans-serif;
+    background: #f5f5f5;
+    color: #111;
+    min-height: 100vh;
+    padding: 40px 24px;
+  }
+
+  h1 { font-size: 18px; font-weight: 600; margin-bottom: 24px; }
+
+  #dropzone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  #dropzone.over { border-color: #555; background: #eee; }
+  #file-input { display: none; }
+
+  #toolbar {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  #toolbar label { font-size: 13px; color: #555; }
+
+  #toolbar select {
+    font-size: 13px;
+    padding: 5px 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+  }
+
+  #apply-all {
+    font-size: 13px;
+    padding: 5px 12px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  #apply-all:hover { background: #eee; }
+
+  #save-all {
+    font-size: 13px;
+    padding: 5px 12px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+  #save-all:hover { background: #333; }
+
+  #images { display: flex; flex-direction: column; gap: 10px; }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+
+  .thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    background: repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%) 0 0 / 12px 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .name {
+    flex: 1;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .dims { font-size: 11px; color: #999; white-space: nowrap; }
+
+  .row select {
+    font-size: 13px;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .dl {
+    font-size: 13px;
+    padding: 5px 12px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .dl:hover { background: #333; }
+
+  .rm {
+    font-size: 16px;
+    color: #bbb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 2px;
+  }
+  .rm:hover { color: #555; }
+</style>
+</head>
+<body>
+
+<h1>Pixel Art Upscaler</h1>
+
+<div id="dropzone">
+  Drop PNGs here or click to browse
+  <input type="file" id="file-input" accept="image/png" multiple>
+</div>
+
+<div id="toolbar">
+  <label>Apply to all:</label>
+  <select id="global-mult">
+    <option value="2">x2</option>
+    <option value="3">x3</option>
+    <option value="4" selected>x4</option>
+    <option value="6">x6</option>
+    <option value="8">x8</option>
+    <option value="10">x10</option>
+    <option value="16">x16</option>
+  </select>
+  <button id="apply-all">Apply</button>
+  <button id="save-all">Save all</button>
+</div>
+
+<div id="images"></div>
+
+<script>
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('file-input');
+  const imageList = document.getElementById('images');
+  const toolbar = document.getElementById('toolbar');
+  const globalMult = document.getElementById('global-mult');
+  const rows = []; // { sel, img, file }
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => { handleFiles(e.target.files); fileInput.value = ''; });
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('over'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('over'));
+  dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('over'); handleFiles(e.dataTransfer.files); });
+
+  document.getElementById('apply-all').addEventListener('click', () => {
+    rows.forEach(r => { r.sel.value = globalMult.value; r.updateDims(); });
+  });
+
+  document.getElementById('save-all').addEventListener('click', async () => {
+    for (const r of rows) {
+      await saveImage(r.img, r.file, +r.sel.value);
+      await new Promise(res => setTimeout(res, 80));
+    }
+  });
+
+  function handleFiles(files) {
+    [...files].filter(f => f.type === 'image/png').forEach(addImage);
+  }
+
+  function addImage(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        const thumb = document.createElement('img');
+        thumb.className = 'thumb';
+        thumb.src = e.target.result;
+
+        const name = document.createElement('span');
+        name.className = 'name';
+        name.textContent = file.name;
+
+        const dims = document.createElement('span');
+        dims.className = 'dims';
+
+        const sel = document.createElement('select');
+        [2,3,4,6,8,10,16].forEach(n => {
+          const opt = document.createElement('option');
+          opt.value = n; opt.textContent = 'x' + n;
+          if (n === +globalMult.value) opt.selected = true;
+          sel.appendChild(opt);
+        });
+
+        const updateDims = () => {
+          const m = +sel.value;
+          dims.textContent = `${img.width}x${img.height} → ${img.width*m}x${img.height*m}`;
+        };
+        updateDims();
+        sel.addEventListener('change', updateDims);
+
+        const dl = document.createElement('button');
+        dl.className = 'dl';
+        dl.textContent = 'Save';
+        dl.addEventListener('click', () => saveImage(img, file, +sel.value));
+
+        const rm = document.createElement('button');
+        rm.className = 'rm';
+        rm.textContent = '×';
+        rm.addEventListener('click', () => {
+          row.remove();
+          const i = rows.findIndex(r => r.sel === sel);
+          if (i !== -1) rows.splice(i, 1);
+          if (rows.length === 0) toolbar.style.display = 'none';
+        });
+
+        row.append(thumb, name, dims, sel, dl, rm);
+        imageList.appendChild(row);
+        rows.push({ sel, img, file, updateDims });
+        toolbar.style.display = 'flex';
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function saveImage(img, file, mult) {
+    return new Promise(res => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width * mult;
+      canvas.height = img.height * mult;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = file.name.replace(/\.png$/i, '') + '_x' + mult + '.png';
+        a.click();
+        URL.revokeObjectURL(a.href);
+        res();
+      }, 'image/png');
+    });
+  }
+</script>
+</body>
+</html>

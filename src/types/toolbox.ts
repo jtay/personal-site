@@ -1,12 +1,12 @@
 import type { StrapiMedia } from './strapi';
 
 export interface ToolboxItem {
-  id: number;
-  documentId: string;
+  id?: number;
+  documentId?: string;
   slug: string;
   title: string;
   subtitle?: string;
-  image?: StrapiMedia;
+  image?: string;
   htmlPath: string;
   color?: string;
   publishedAt?: string;

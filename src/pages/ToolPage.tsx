@@ -1,14 +1,12 @@
 import React from 'react';
 import { useParams } from 'react-router';
-import { useStrapi } from '../context/StrapiContext';
 import { useToolboxItems } from '../hooks/useToolboxItems';
 import { ToolWrapper } from '../components/toolbox/ToolWrapper';
 import { SEO } from '../components/SEO';
 
 export const ToolPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { strapi } = useStrapi();
-  const { items, isLoading, error } = useToolboxItems({ strapi });
+  const { items, isLoading, error } = useToolboxItems();
 
   const currentTool = items.find((item) => item.slug === slug);
 

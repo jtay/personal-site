@@ -1,10 +1,18 @@
 [
   {
     "slug": "upscaler",
-    "title": "Image Upscaler",
-    "subtitle": "Upscale images using AI.",
-    "image": "/assets/tools/upscaler.png",
-    "htmlPath": "tools/upscaler.html",
-    "color": "#4a90e2"
+    "title": "Pixel Art Upscaler",
+    "subtitle": "Nearest neighbor upscaling for pixel art.",
+    "image": "/assets/tools/pixel-art.png",
+    "htmlPath": "tools/pixel-art-upscaler.html",
+    "color": "#ffffff"
+  },
+  {
+    "slug": "code-svg",
+    "title": "Code SVG Generator",
+    "subtitle": "Generate SVG images of TypeScript code.",
+    "image": "/assets/tools/code-svg.svg",
+    "htmlPath": "tools/code-svg.html",
+    "color": "#ffffff"
   }
 ]

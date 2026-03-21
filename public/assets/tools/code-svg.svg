@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="441.9997253417969" height="224" viewBox="0 0 441.9997253417969 224">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="28" flood-color="#000" flood-opacity="0.55"/>
+    </filter>
+    
+  </defs>
+
+  <!-- Card background -->
+  <rect x="0" y="0" width="441.9997253417969" height="224"
+    rx="10" ry="10"
+    fill="#0d1117"
+    filter="url(#shadow)"/>
+  
+  <!-- Chrome bar -->
+  <path d="M10,0 H431.9997253417969 Q441.9997253417969,0 441.9997253417969,10 V36 H0 V10 Q0,0 10,0 Z" fill="#1c2026"/>
+  <!-- Traffic lights -->
+  <circle cx="32" cy="18" r="6" fill="#ff5f56"/>
+  <circle cx="52" cy="18" r="6" fill="#ffbd2e"/>
+  <circle cx="72" cy="18" r="6" fill="#27c93f"/>
+  <text x="32" y="77.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#3d444d" xml:space="preserve">1</text>
+  <text x="57.199981689453125" y="77.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#8b949e" font-style="italic" xml:space="preserve">// Example TypeScript code rendered as SVG</text>
+  <text x="32" y="99.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#3d444d" xml:space="preserve">2</text>
+  <text x="57.199981689453125" y="99.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#ff7b72" xml:space="preserve">interface</text>
+  <text x="141.19992065429688" y="99.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#79c0ff" xml:space="preserve">Config</text>
+  <text x="199.9998779296875" y="99.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#c9d1d9" xml:space="preserve">{</text>
+  <text x="32" y="121.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#3d444d" xml:space="preserve">3</text>
+  <text x="73.99996948242188" y="121.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#e6edf3" xml:space="preserve">host</text>
+  <text x="107.59994506835938" y="121.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#ff7b72" xml:space="preserve">:</text>
+  <text x="124.39993286132812" y="121.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#79c0ff" xml:space="preserve">string</text>
+  <text x="174.79989624023438" y="121.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#c9d1d9" xml:space="preserve">;</text>
+  <text x="32" y="143.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#3d444d" xml:space="preserve">4</text>
+  <text x="73.99996948242188" y="143.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#e6edf3" xml:space="preserve">port</text>
+  <text x="107.59994506835938" y="143.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#ff7b72" xml:space="preserve">:</text>
+  <text x="124.39993286132812" y="143.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#79c0ff" xml:space="preserve">number</text>
+  <text x="174.79989624023438" y="143.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#c9d1d9" xml:space="preserve">;</text>
+  <text x="32" y="165.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#3d444d" xml:space="preserve">5</text>
+  <text x="73.99996948242188" y="165.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#e6edf3" xml:space="preserve">debug</text>
+  <text x="115.99993896484375" y="165.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#ff7b72" xml:space="preserve">?</text>
+  <text x="124.39993286132812" y="165.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#ff7b72" xml:space="preserve">:</text>
+  <text x="141.19992065429688" y="165.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#79c0ff" xml:space="preserve">boolean</text>
+  <text x="199.9998779296875" y="165.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#c9d1d9" xml:space="preserve">;</text>
+  <text x="32" y="187.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#3d444d" xml:space="preserve">6</text>
+  <text x="57.199981689453125" y="187.80000019073486" font-family="DM Mono,DM Mono,monospace" font-size="14" fill="#c9d1d9" xml:space="preserve">}</text>
+</svg>

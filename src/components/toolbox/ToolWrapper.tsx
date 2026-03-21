@@ -19,7 +19,6 @@ export const ToolWrapper: React.FC<ToolWrapperProps> = ({ children, currentTool,
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-      {/* Mr Doob Style Top Bar */}
       <div
         style={{
           height: '32px',
@@ -39,15 +38,15 @@ export const ToolWrapper: React.FC<ToolWrapperProps> = ({ children, currentTool,
           <Link to="/toolbox" style={{ color: '#aaa', textDecoration: 'none', fontWeight: 'bold' }}>
             TOOLBOX
           </Link>
-          
+
           <div style={{ position: 'relative' }}>
-            <span 
+            <span
               onClick={() => setMenuOpen(!menuOpen)}
               style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
             >
               {currentTool ? currentTool.title.toUpperCase() : 'SELECT TOOL'} ▾
             </span>
-            
+
             {menuOpen && (
               <div
                 style={{
@@ -81,12 +80,12 @@ export const ToolWrapper: React.FC<ToolWrapperProps> = ({ children, currentTool,
             )}
           </div>
         </div>
-        
+
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '15px' }}>
-           {currentTool?.subtitle && (
-             <span style={{ color: '#666' }}>{currentTool.subtitle.toUpperCase()}</span>
-           )}
-           <Link to="/" style={{ color: '#aaa', textDecoration: 'none' }}>EXIT</Link>
+          {currentTool?.subtitle && (
+            <span style={{ color: '#666' }}>{currentTool.subtitle.toUpperCase()}</span>
+          )}
+          <Link to="/" style={{ color: '#aaa', textDecoration: 'none' }}>EXIT</Link>
         </div>
       </div>
 

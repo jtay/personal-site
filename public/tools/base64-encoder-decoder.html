@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base64 Encoder & Decoder</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .split-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+  .pane {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    background: var(--surface);
+  }
+  .pane-left {
+    width: 50%;
+  }
+  .pane-right {
+    flex: 1;
+    background: var(--surface2);
+  }
+  .divider {
+    width: 6px;
+    background: var(--border);
+    cursor: col-resize;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .divider:hover, .divider.dragging {
+    background: var(--accent);
+  }
+  .pane-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: inherit;
+    flex-shrink: 0;
+  }
+  .pane-content {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+  }
+  textarea {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    resize: none;
+    padding: 16px 16px 40px 16px; /* extra bottom padding */
+    background: transparent;
+    font-family: 'DM Mono', monospace;
+    color: var(--text);
+    outline: none;
+    line-height: 1.6;
+    transition: box-shadow 0.15s ease;
+  }
+  textarea.error {
+    box-shadow: inset 0 0 0 2px var(--warn);
+  }
+  
+  @media (max-width: 768px) {
+    .split-container {
+      flex-direction: column;
+    }
+    .pane-left {
+      width: 100% !important;
+      height: 50%;
+    }
+    .divider {
+      width: 100%;
+      height: 6px;
+      cursor: row-resize;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="split-container">
+  <div class="pane pane-left" id="pane-left">
+    <div class="pane-header">
+      <div style="font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);">Plain Text</div>
+      <button id="copy-plain" class="btn btn-secondary" style="padding: 4px 12px; font-size: 11px;">Copy</button>
+    </div>
+    <div class="pane-content">
+      <textarea id="plain-text" placeholder="Type or paste plain text here..."></textarea>
+    </div>
+  </div>
+  
+  <div class="divider" id="divider"></div>
+
+  <div class="pane pane-right" id="pane-right">
+    <div class="pane-header">
+      <div style="font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);">Base64</div>
+      <button id="copy-base64" class="btn btn-secondary" style="padding: 4px 12px; font-size: 11px;">Copy</button>
+    </div>
+    <div class="pane-content">
+      <textarea id="base64-text" placeholder="Type or paste base64 here..."></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Split pane logic
+  const divider = document.getElementById('divider');
+  const paneLeft = document.getElementById('pane-left');
+  let isDragging = false;
+  let isVertical = window.innerWidth <= 768;
+
+  window.addEventListener('resize', () => {
+    isVertical = window.innerWidth <= 768;
+    if (isVertical) {
+      paneLeft.style.width = '100%';
+    } else {
+      paneLeft.style.height = '100%';
+    }
+  });
+
+  function startDrag() {
+    isDragging = true;
+    divider.classList.add('dragging');
+    document.body.style.cursor = isVertical ? 'row-resize' : 'col-resize';
+  }
+
+  function doDrag(clientX, clientY) {
+    if (!isDragging) return;
+    if (isVertical) {
+      const percentage = (clientY / window.innerHeight) * 100;
+      paneLeft.style.height = Math.min(Math.max(percentage, 10), 90) + '%';
+    } else {
+      const percentage = (clientX / window.innerWidth) * 100;
+      paneLeft.style.width = Math.min(Math.max(percentage, 10), 90) + '%';
+    }
+  }
+
+  function endDrag() {
+    if (isDragging) {
+      isDragging = false;
+      divider.classList.remove('dragging');
+      document.body.style.cursor = '';
+    }
+  }
+
+  divider.addEventListener('mousedown', startDrag);
+  document.addEventListener('mousemove', (e) => doDrag(e.clientX, e.clientY));
+  document.addEventListener('mouseup', endDrag);
+
+  divider.addEventListener('touchstart', (e) => {
+    startDrag();
+  });
+  document.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    doDrag(touch.clientX, touch.clientY);
+  });
+  document.addEventListener('touchend', endDrag);
+
+
+  // Encode/Decode Logic
+  const plainText = document.getElementById('plain-text');
+  const base64Text = document.getElementById('base64-text');
+
+  function toBase64(str) {
+    const bytes = new TextEncoder().encode(str);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  function fromBase64(b64) {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+    }
+    return new TextDecoder().decode(bytes);
+  }
+
+  let isEditingPlain = false;
+  let isEditingBase64 = false;
+
+  plainText.addEventListener('input', () => {
+    isEditingPlain = true;
+    if (!isEditingBase64) {
+      let val = plainText.value;
+      if (val.trim().startsWith('{') || val.trim().startsWith('[')) {
+        try {
+          const parsed = JSON.parse(val);
+          if (parsed !== null && typeof parsed === 'object') {
+            const pretty = JSON.stringify(parsed, null, 2);
+            if (val !== pretty) {
+              plainText.value = pretty;
+              val = pretty;
+            }
+          }
+        } catch(e) {}
+      }
+      try {
+        base64Text.value = toBase64(val);
+        base64Text.classList.remove('error');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    isEditingPlain = false;
+  });
+
+  base64Text.addEventListener('input', () => {
+    isEditingBase64 = true;
+    if (!isEditingPlain) {
+      const val = base64Text.value.replace(/\s+/g, '');
+      if (!val) {
+        plainText.value = '';
+        base64Text.classList.remove('error');
+      } else {
+        try {
+          let decoded = fromBase64(val);
+          if (decoded.trim().startsWith('{') || decoded.trim().startsWith('[')) {
+            try {
+              const parsed = JSON.parse(decoded);
+              if (parsed !== null && typeof parsed === 'object') {
+                decoded = JSON.stringify(parsed, null, 2);
+              }
+            } catch(e) {}
+          }
+          plainText.value = decoded;
+          base64Text.classList.remove('error');
+        } catch (e) {
+          base64Text.classList.add('error');
+        }
+      }
+    }
+    isEditingBase64 = false;
+  });
+
+  function setupCopy(btnId, textArea) {
+    const btn = document.getElementById(btnId);
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(textArea.value);
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('btn-success');
+        btn.classList.remove('btn-secondary');
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('btn-success');
+          btn.classList.add('btn-secondary');
+        }, 1500);
+      } catch (e) {
+        console.error('Failed to copy', e);
+      }
+    });
+  }
+
+  setupCopy('copy-plain', plainText);
+  setupCopy('copy-base64', base64Text);
+</script>
+</body>
+</html>

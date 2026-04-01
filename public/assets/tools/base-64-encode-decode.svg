@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="467.1998291015625" height="255" viewBox="0 0 467.1998291015625 255">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="28" flood-color="#000" flood-opacity="0.55"/>
+    </filter>
+    
+  </defs>
+
+  <!-- Card background -->
+  <rect x="0" y="0" width="467.1998291015625" height="255"
+    rx="10" ry="10"
+    fill="#0d1117"
+    filter="url(#shadow)"/>
+  
+  <!-- Chrome bar -->
+  <path d="M10,0 H457.1998291015625 Q467.1998291015625,0 467.1998291015625,10 V36 H0 V10 Q0,0 10,0 Z" fill="#1c2026"/>
+  <!-- Traffic lights -->
+  <circle cx="32" cy="18" r="6" fill="#ff5f56"/>
+  <circle cx="52" cy="18" r="6" fill="#ffbd2e"/>
+  <circle cx="72" cy="18" r="6" fill="#27c93f"/>
+  <text x="32" y="88.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#3d444d" xml:space="preserve">1</text>
+  <text x="75.19998168945312" y="88.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#d2a8ff" xml:space="preserve">btoa</text>
+  <text x="132.79995727539062" y="88.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#c9d1d9" xml:space="preserve">(</text>
+  <text x="147.199951171875" y="88.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#a5d6ff" xml:space="preserve">&quot;Hello world!&quot;</text>
+  <text x="348.79986572265625" y="88.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#c9d1d9" xml:space="preserve">)</text>
+  <text x="363.1998596191406" y="88.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#c9d1d9" xml:space="preserve">;</text>
+  <text x="32" y="119.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#3d444d" xml:space="preserve">2</text>
+  <text x="75.19998168945312" y="119.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#8b949e" font-style="italic" xml:space="preserve">// SGVsbG8gd29ybGQh</text>
+  <text x="32" y="150.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#3d444d" xml:space="preserve">3</text>
+  <text x="32" y="181.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#3d444d" xml:space="preserve">4</text>
+  <text x="75.19998168945312" y="181.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#d2a8ff" xml:space="preserve">atob</text>
+  <text x="132.79995727539062" y="181.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#c9d1d9" xml:space="preserve">(</text>
+  <text x="147.199951171875" y="181.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#a5d6ff" xml:space="preserve">&quot;SGVsbG8gd29ybGQh&quot;</text>
+  <text x="406.39984130859375" y="181.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#c9d1d9" xml:space="preserve">)</text>
+  <text x="420.7998352050781" y="181.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#c9d1d9" xml:space="preserve">;</text>
+  <text x="32" y="212.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#3d444d" xml:space="preserve">5</text>
+  <text x="75.19998168945312" y="212.79999923706055" font-family="CustomFont,DM Mono,monospace" font-size="24" fill="#8b949e" font-style="italic" xml:space="preserve">// Hello world!</text>
+</svg>

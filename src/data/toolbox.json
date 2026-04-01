@@ -22,5 +22,13 @@
     "image": "/assets/tools/base-64-encode-decode.svg",
     "htmlPath": "tools/base64-encoder-decoder.html",
     "color": "#ffffff"
+  },
+  {
+    "slug": "json-tree-viewer",
+    "title": "JSON Tree Viewer",
+    "subtitle": "Interactive hierarchical view of JSON data.",
+    "image": "/assets/tools/json-tree.png",
+    "htmlPath": "tools/json-tree-viewer.html",
+    "color": "#ffffff"
   }
 ]

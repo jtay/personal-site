@@ -1,19 +1,18 @@
 import { BlockStack, Page, Text, InlineStack, Card, SkeletonBodyText, SkeletonDisplayText, Box, Button } from '@shopify/polaris'
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
-import { useStrapi } from '../context/StrapiContext'
 import type { BlogPostDocument } from '../types/blog'
 import { ArrowLeftIcon } from '@shopify/polaris-icons'
 import { BlogContent } from '../components/blog/BlogContent'
 import { SEO } from '../components/SEO'
 import { ArticleStructuredData } from '../components/StructuredData'
 import { getAbsoluteUrl } from '../utils/url'
+import fm from 'front-matter'
+import blogIndex from '../data/blog-index.json'
 
 export const BlogPost = () => {
   const { handle } = useParams<{ handle: string }>()
   const navigate = useNavigate()
-  const { strapi, getImageUrl } = useStrapi()
-  const blogPosts = strapi.collection('api/blog-posts')
 
   const [post, setPost] = useState<BlogPostDocument | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -28,25 +27,31 @@ export const BlogPost = () => {
       }
 
       try {
-        const postsResponse = await blogPosts.find({
-          filters: {
-            handle: {
-              $eq: handle
-            }
-          },
-          populate: ["featuredImage_landscape", "featuredImage_portrait"]
-        })
-
-        if (postsResponse.data.length > 0) {
-          setPost(postsResponse.data[0] as BlogPostDocument)
-          console.log({
-            response: postsResponse.data[0]
-          })
-          setIsLoading(false)
-        } else {
+        const matchingMeta = blogIndex.find((p: any) => p.handle === handle) as any;
+        
+        if (!matchingMeta) {
           setNotFound(true)
           setIsLoading(false)
+          return
         }
+
+        const res = await fetch(`/content/blog/${handle}/index.md`)
+        
+        if (!res.ok) {
+          setNotFound(true)
+          setIsLoading(false)
+          return
+        }
+
+        const textContent = await res.text()
+        const parsed = fm<any>(textContent)
+
+        setPost({
+          ...matchingMeta,
+          content: parsed.body,
+        })
+        setIsLoading(false)
+
       } catch (error) {
         console.error('Error fetching blog post:', error)
         setNotFound(true)
@@ -100,15 +105,9 @@ export const BlogPost = () => {
     )
   }
 
-
-  const imageUrl = post.featuredImage_landscape?.url
-    ? getImageUrl(post.featuredImage_landscape.url)
-    : undefined;
-
-  // Use subtitle as description since excerpt is missing
-  // Default author to site owner since author field is missing in type
+  const imageUrl = post.featuredImage_landscape?.url || post.featuredImage_portrait?.url || undefined;
   const authorName = 'Jaydon Taylor';
-  const tags: string[] = []; // Default empty since tags missing in type
+  const tags: string[] = [];
 
   return (
     <>
@@ -159,15 +158,15 @@ export const BlogPost = () => {
         )}
       >
         <BlockStack gap="500">
-          {/* Featured Image */}
-          {post.featuredImage_landscape?.url && (
+          {imageUrl && (
             <Box borderRadius="300">
               <img
-                src={getImageUrl(post.featuredImage_landscape.url)}
+                src={imageUrl}
                 alt={post.title}
                 style={{
                   width: '100%',
-                  height: 'auto',
+                  maxHeight: '300px',
+                  objectFit: 'contain',
                   display: 'block',
                   borderRadius: '0.5rem'
                 }}
@@ -175,14 +174,12 @@ export const BlogPost = () => {
             </Box>
           )}
 
-          {/* Content Card */}
           <Card>
             <BlockStack gap="500">
               {post.content && <BlogContent content={post.content} />}
             </BlockStack>
           </Card>
 
-          {/* Back to Blog Button */}
           <InlineStack>
             <Button
               icon={ArrowLeftIcon}

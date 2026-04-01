@@ -1,6 +1,6 @@
 import React from 'react';
 import { Page, Grid, Card, BlockStack, Text, Box, InlineStack, Badge } from '@shopify/polaris';
-import { useStrapi } from '../context/StrapiContext';
+
 import { useToolboxItems } from '../hooks/useToolboxItems';
 import { Link } from 'react-router';
 import { SEO } from '../components/SEO';

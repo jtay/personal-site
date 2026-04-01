@@ -14,5 +14,13 @@
     "image": "/assets/tools/code-svg.svg",
     "htmlPath": "tools/code-svg.html",
     "color": "#ffffff"
+  },
+  {
+    "slug": "base64-encoder-decoder",
+    "title": "Base64 Encoder & Decoder",
+    "subtitle": "Encode and decode Base64 strings.",
+    "image": "/assets/tools/base-64-encode-decode.svg",
+    "htmlPath": "tools/base64-encoder-decoder.html",
+    "color": "#ffffff"
   }
 ]

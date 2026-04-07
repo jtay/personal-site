@@ -1,0 +1,10 @@
+{
+  "availability": "AVAILABLE",
+  "message": "I currently have capacity to take on new projects.",
+  "availableFrom": null,
+  "hourlyRate": 60,
+  "hoursPerDay": 8,
+  "heading": "Available for Freelance",
+  "ctaText": "Get in touch",
+  "ctaEnabled": true
+}

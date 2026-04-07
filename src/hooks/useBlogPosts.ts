@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { BlogPostDocument, BlogPostFilters } from '../types/blog';
-import type { StrapiCollectionResponse } from '../types/strapi';
+import blogIndex from '../data/blog-index.json';
 
 interface UseBlogPostsParams {
-  strapi: any;
+  strapi?: any;
   filters: BlogPostFilters;
   currentPage: number;
   postsPerPage?: number;
@@ -16,89 +16,62 @@ interface UseBlogPostsReturn {
   error: Error | null;
   totalCount: number;
   totalPages: number;
-  overallTotalCount: number; // Total count without any filters
+  overallTotalCount: number;
 }
 
 export const useBlogPosts = ({
-  strapi,
   filters,
   currentPage,
   postsPerPage = 6,
-  fetchTotalCount = true
 }: UseBlogPostsParams): UseBlogPostsReturn => {
   const [posts, setPosts] = useState<BlogPostDocument[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [overallTotalCount, setOverallTotalCount] = useState<number>(0);
+
+  const postsData = blogIndex as any[];
 
   useEffect(() => {
-    const fetchBlogPosts = async () => {
-      setIsLoading(true);
-      setError(null);
+    let filteredPosts = [...postsData];
 
-      try {
-        const blogPosts = strapi.collection('api/blog-posts');
-        
-        // Only include filters if there are any active filters
-        const hasFilters = Object.keys(filters).length > 0;
-        
-        const queryParams: any = {
-          populate: {
-            featuredImage_landscape: true,
-            featuredImage_portrait: true,
-            categories: {
-              fields: ['name']
-            }
-          },
-          pagination: {
-            page: currentPage,
-            pageSize: postsPerPage
-          },
-          sort: ['publishedAt:desc']
-        };
-        
-        // Only add filters if they exist
-        if (hasFilters) {
-          queryParams.filters = filters;
-        }
-        
-        const response = await blogPosts.find(queryParams) as StrapiCollectionResponse<BlogPostDocument>;
+    if (filters.categoryIds && filters.categoryIds.length > 0) {
+      filteredPosts = filteredPosts.filter(post => 
+        post.categories && post.categories.some((cat: string) => 
+          filters.categoryIds.includes(cat) 
+        )
+      );
+    }
 
-        setPosts(response.data);
-        setTotalCount(response.meta.pagination.total);
-        
-        // Fetch overall total count if requested and we have filters
-        if (fetchTotalCount && hasFilters) {
-          const totalResponse = await blogPosts.find({
-            pagination: { page: 1, pageSize: 1 }
-          }) as StrapiCollectionResponse<BlogPostDocument>;
-          setOverallTotalCount(totalResponse.meta.pagination.total);
-        } else if (!hasFilters) {
-          // If no filters, the total count is the same as overall
-          setOverallTotalCount(response.meta.pagination.total);
-        }
-      } catch (err) {
-        console.error('Error fetching blog posts:', err);
-        setError(err instanceof Error ? err : new Error('Failed to fetch blog posts'));
-        setPosts([]);
-        setTotalCount(0);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (filters.years && filters.years.length > 0) {
+      filteredPosts = filteredPosts.filter(post => {
+        const year = new Date(post.publishedAt).getFullYear();
+        return filters.years.includes(year);
+      });
+    }
 
-    fetchBlogPosts();
-  }, [strapi, filters, currentPage, postsPerPage, fetchTotalCount]);
+    if (filters.search) {
+      const q = filters.search.toLowerCase();
+      filteredPosts = filteredPosts.filter(post => 
+        post.title.toLowerCase().includes(q) || 
+        post.subtitle.toLowerCase().includes(q)
+      );
+    }
+
+    setTotalCount(filteredPosts.length);
+
+    // Apply pagination
+    const start = (currentPage - 1) * postsPerPage;
+    const paginatedPosts = filteredPosts.slice(start, start + postsPerPage);
+
+    setPosts(paginatedPosts as any);
+  }, [filters, currentPage, postsPerPage]);
 
   const totalPages = Math.ceil(totalCount / postsPerPage);
 
   return {
     posts,
-    isLoading,
-    error,
+    isLoading: false,
+    error: null,
     totalCount,
     totalPages,
-    overallTotalCount
+    overallTotalCount: postsData.length
   };
 };

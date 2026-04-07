@@ -29,3 +29,7 @@ dist-ssr
 # SEO Generated Files
 public/robots.txt
 public/sitemap.xml
+
+# Generated JSON Index
+src/data/blog-index.json
+src/data/categories.json

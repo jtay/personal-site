@@ -1,7 +1,9 @@
 ---
-layout: default
 title: "EscNotes - Print Notes as Receipts"
-date: 2025-07-06
+subtitle: "A MacOS application for printing simple notes from markdown as ESC/POS receipts using Tauri and React, improving productivity and task-tracking with physical reminders."
+publishedAt: "2025-07-06T00:00:00.000Z"
+categories: ["Productivity", "Engineering"]
+featuredImage_portrait: "escnotes.png"
 ---
 
 When you have an ESC/POS receipt printer sitting on your desk collecting dust, the obvious question becomes: how can I actually use this thing?

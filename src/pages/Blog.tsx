@@ -1,5 +1,5 @@
 import { BlockStack, Card, Grid, Page, Text, InlineStack, Button, Pagination } from '@shopify/polaris'
-import { useStrapi } from '../context/StrapiContext'
+
 import { BlogPostCard } from '../components/blog/BlogPostCard'
 import { BlogFilters } from '../components/blog/BlogFilters'
 import { LoadingCard } from '../components/core/LoadingCard'
@@ -21,7 +21,6 @@ const getAvailableYears = (): number[] => {
 
 export const Blog = () => {
   const navigate = useNavigate()
-  const { strapi } = useStrapi()
 
   // Filter state management
   const {
@@ -37,8 +36,7 @@ export const Blog = () => {
     filters
   } = useBlogFilters()
 
-  // Fetch categories
-  const { categories, isLoading: categoriesLoading } = useCategories({ strapi })
+  const { categories, isLoading: categoriesLoading } = useCategories()
 
   // Fetch blog posts with current filters (single hook now fetches both counts)
   const {
@@ -48,7 +46,6 @@ export const Blog = () => {
     totalPages,
     overallTotalCount
   } = useBlogPosts({
-    strapi,
     filters,
     currentPage,
     postsPerPage: 6
@@ -162,7 +159,7 @@ export const Blog = () => {
                   <BlockStack gap="400">
                     <BlockStack gap="400">
                       {posts.map((post) => (
-                        <BlogPostCard key={post.documentId} post={post} />
+                        <BlogPostCard key={post.handle} post={post} />
                       ))}
                     </BlockStack>
 

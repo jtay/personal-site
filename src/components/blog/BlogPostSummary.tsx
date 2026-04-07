@@ -1,6 +1,6 @@
 import { BlockStack, Box, Grid, InlineStack, Link, Text } from "@shopify/polaris"
 import type { BlogPostDocument } from "../../types/blog"
-import { useStrapi } from "../../context/StrapiContext"
+
 import { useNavigate } from "react-router"
 import { BlogContentSummary } from "./BlogContentSummary"
 
@@ -10,19 +10,21 @@ type BlogPostSummaryProps = {
 
 export const BlogPostSummary = ({ post }: BlogPostSummaryProps) => {
     const navigate = useNavigate()
-    const { getImageUrl } = useStrapi();
+    const imageUrl = post.featuredImage_landscape?.url || post.featuredImage_portrait?.url;
+
     return (
         <div onClick={(() => navigate(`/blog/${post.handle}`))} style={{ cursor: "pointer" }}>
             <Box padding="200" background="bg-fill-secondary" borderRadius="200">
                 <Grid>
                     <Grid.Cell columnSpan={{ xs: 1, sm: 1, md: 1, lg: 2, xl: 2 }}>
-                        {post.featuredImage_portrait?.url && (
+                        {imageUrl && (
                             <Box>
                                 <img
-                                    src={getImageUrl(post.featuredImage_portrait?.url)} 
+                                    src={imageUrl} 
                                     style={{
-                                        height: 'auto',
                                         width: '100%',
+                                        height: '100px',
+                                        objectFit: 'contain',
                                         borderRadius: '0.5rem'
                                     }}
                                 />

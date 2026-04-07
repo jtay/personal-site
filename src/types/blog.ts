@@ -5,8 +5,9 @@
 import type { StrapiDocument, StrapiMedia, StrapiContent } from './strapi';
 
 // Category document structure
-export interface CategoryDocument extends StrapiDocument {
+export interface CategoryDocument {
   name: string;
+  handle: string;
 }
 
 // Blog post document structure
@@ -14,7 +15,7 @@ export interface BlogPostDocument extends StrapiDocument {
   handle: string;
   title: string;
   subtitle: string;
-  content: StrapiContent;
+  content: string;
   featuredImage_landscape: StrapiMedia | null;
   featuredImage_portrait: StrapiMedia | null;
   categories?: CategoryDocument[];
@@ -24,13 +25,12 @@ export interface BlogPostDocument extends StrapiDocument {
 export interface BlogPostPopulated extends BlogPostDocument {
   featuredImage_landscape: StrapiMedia;
   featuredImage_portrait: StrapiMedia;
-  categories: CategoryDocument[];
+  categories?: CategoryDocument[];
 }
 
 // Blog post list item (minimal data for lists)
 export interface BlogPostListItem {
   id: number;
-  documentId: string;
   handle: string;
   title: string;
   subtitle: string;
@@ -51,7 +51,7 @@ export interface BlogPostInput {
   handle: string;
   title: string;
   subtitle: string;
-  content?: StrapiContent;
+  content?: string;
   featuredImage_landscape?: number; // Media ID
   featuredImage_portrait?: number; // Media ID
   categories?: string[]; // Category documentIds
@@ -59,39 +59,9 @@ export interface BlogPostInput {
 
 // Blog post filters for queries
 export interface BlogPostFilters {
-  handle?: {
-    $eq?: string;
-    $ne?: string;
-    $in?: string[];
-    $notIn?: string[];
-    $contains?: string;
-  };
-  title?: {
-    $contains?: string;
-    $containsi?: string;
-    $startsWith?: string;
-  };
-  subtitle?: {
-    $contains?: string;
-    $containsi?: string;
-  };
-  publishedAt?: {
-    $null?: boolean;
-    $notNull?: boolean;
-    $gt?: string;
-    $gte?: string;
-    $lt?: string;
-    $lte?: string;
-  };
-  categories?: {
-    documentId?: {
-      $in?: string[];
-    };
-  };
-  $or?: Array<{
-    title?: { $containsi?: string };
-    subtitle?: { $containsi?: string };
-  }>;
+  categoryIds: string[];
+  years: number[];
+  search: string;
 }
 
 // Hook return type for blog filter state

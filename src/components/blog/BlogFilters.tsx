@@ -2,8 +2,7 @@ import { BlockStack, Card, Text, Checkbox, Button, TextField, Tag, InlineStack, 
 import { useState, useEffect, useCallback, useRef } from "react"
 
 type Category = {
-    id: number
-    documentId: string
+    handle: string
     name: string
 }
 
@@ -71,11 +70,11 @@ export const BlogFilters = ({
         }
     }, [])
 
-    const handleCategoryToggle = useCallback((categoryDocumentId: string) => {
-        if (selectedCategoryIds.includes(categoryDocumentId)) {
-            onCategoryChange(selectedCategoryIds.filter(id => id !== categoryDocumentId))
+    const handleCategoryToggle = useCallback((categoryName: string) => {
+        if (selectedCategoryIds.includes(categoryName)) {
+            onCategoryChange(selectedCategoryIds.filter(id => id !== categoryName))
         } else {
-            onCategoryChange([...selectedCategoryIds, categoryDocumentId])
+            onCategoryChange([...selectedCategoryIds, categoryName])
         }
     }, [selectedCategoryIds, onCategoryChange])
 
@@ -87,8 +86,8 @@ export const BlogFilters = ({
         }
     }, [selectedYears, onYearChange])
 
-    const handleCategoryRemove = useCallback((categoryDocumentId: string) => {
-        onCategoryChange(selectedCategoryIds.filter(id => id !== categoryDocumentId))
+    const handleCategoryRemove = useCallback((categoryName: string) => {
+        onCategoryChange(selectedCategoryIds.filter(id => id !== categoryName))
     }, [selectedCategoryIds, onCategoryChange])
 
     const handleYearRemove = useCallback((year: number) => {
@@ -137,7 +136,7 @@ export const BlogFilters = ({
                         {selectedCategoryIds.length > 0 && (
                             <InlineStack gap="200" wrap>
                                 {selectedCategoryIds.map((categoryId) => {
-                                    const category = categories.find(c => c.documentId === categoryId)
+                                    const category = categories.find(c => c.name === categoryId)
                                     return category ? (
                                         <Tag key={categoryId} onRemove={() => handleCategoryRemove(categoryId)}>
                                             {category.name}
@@ -151,10 +150,10 @@ export const BlogFilters = ({
                         <BlockStack gap="200">
                             {categories.map((category) => (
                                 <Checkbox
-                                    key={category.documentId}
+                                    key={category.handle}
                                     label={category.name}
-                                    checked={selectedCategoryIds.includes(category.documentId)}
-                                    onChange={() => handleCategoryToggle(category.documentId)}
+                                    checked={selectedCategoryIds.includes(category.name)}
+                                    onChange={() => handleCategoryToggle(category.name)}
                                 />
                             ))}
                         </BlockStack>

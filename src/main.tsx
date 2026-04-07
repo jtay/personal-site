@@ -6,7 +6,7 @@ import { AppProvider } from '@shopify/polaris'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import { Home } from './pages/Home'
 import { TopBar } from './components/core/TopBar'
-import { StrapiProvider } from './context/StrapiContext'
+
 import { Blog } from './pages/Blog'
 import { BlogPost } from './pages/BlogPost'
 import { ToolboxHome } from './pages/ToolboxHome'
@@ -50,13 +50,11 @@ const AppRoutes = () => {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
-      <StrapiProvider>
-        <AppProvider i18n={enTranslations}>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </AppProvider>
-      </StrapiProvider>
+      <AppProvider i18n={enTranslations}>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AppProvider>
     </HelmetProvider>
   </StrictMode>,
 )

@@ -15,7 +15,7 @@ export const HomepageIntroduction = () => {
           <Link url="https://onstate.co.uk/" target="_blank" monochrome>
             Onstate
           </Link>
-          , a Shopify Plus Premier Partner agency offering a range of commercial
+          , a Shopify Plus Platinum Partner agency offering a range of commercial
           services from strategy to implementation.
         </Text>
         <Text as="p">

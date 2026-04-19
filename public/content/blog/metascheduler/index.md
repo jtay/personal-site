@@ -1,7 +1,7 @@
 ---
 title: "Metascheduler - Shopify App"
 subtitle: "A Shopify app for managing recurring metaobject publishing."
-publishedAt: "2025-07-06T00:00:00.000Z"
+publishedAt: "2026-04-19T00:00:00.000Z"
 categories: ["E-commerce", "Engineering", "Shopify"]
 featuredImage_portrait: "metascheduler-icon.png"
 featuredImage_landscape: "metascheduler-ad.png"

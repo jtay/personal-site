@@ -10,7 +10,7 @@ type BlogPostSummaryProps = {
 
 export const BlogPostSummary = ({ post }: BlogPostSummaryProps) => {
     const navigate = useNavigate()
-    const imageUrl = post.featuredImage_landscape?.url || post.featuredImage_portrait?.url;
+    const imageUrl = post.featuredImage_portrait?.url || post.featuredImage_landscape?.url;
 
     return (
         <div onClick={(() => navigate(`/blog/${post.handle}`))} style={{ cursor: "pointer" }}>
@@ -20,7 +20,7 @@ export const BlogPostSummary = ({ post }: BlogPostSummaryProps) => {
                         {imageUrl && (
                             <Box>
                                 <img
-                                    src={imageUrl} 
+                                    src={imageUrl}
                                     style={{
                                         width: '100%',
                                         height: '100px',
@@ -54,7 +54,7 @@ export const BlogPostSummary = ({ post }: BlogPostSummaryProps) => {
                                 </Text>
                             )}
                         </BlockStack>
-                    </Grid.Cell>                    
+                    </Grid.Cell>
                 </Grid>
             </Box>
         </div>

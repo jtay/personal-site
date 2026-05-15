@@ -1,10 +1,10 @@
 {
-  "availability": "IN_PROJECT",
-  "message": "I'm busy tackling new projects right now.",
+  "availability": "AVAILABLE",
+  "message": "I'm open to new projects at the moment. Get in touch!",
   "availableFrom": "2026-06-01T00:00:00.000Z",
   "hourlyRate": 60,
   "hoursPerDay": 8,
   "heading": "Freelance Availability",
-  "ctaText": "Get in touch",
-  "ctaEnabled": false
+  "ctaText": "Let's Chat",
+  "ctaEnabled": true
 }

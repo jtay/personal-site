@@ -6,7 +6,7 @@
     "dev": "concurrently \"vite\" \"npm run dev --prefix tools-src/catalogue-builder\"",
     "build": "tsc -b && vite build",
     "build-content": "tsx scripts/build-content.ts",
-    "build:catalogue-builder": "npm install --prefix tools-src/catalogue-builder && npm run build --prefix tools-src/catalogue-builder",
+    "build:catalogue-builder": "npm ci --prefix tools-src/catalogue-builder && npm run build --prefix tools-src/catalogue-builder",
     "prebuild": "npm run build-content && npm run build:catalogue-builder",
     "predev": "npm run build-content && npm run build:catalogue-builder",
     "lint": "eslint .",

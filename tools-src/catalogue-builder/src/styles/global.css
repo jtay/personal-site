@@ -1,0 +1,94 @@
+:root {
+  --cb-color-bg: #f4f4f5;
+  --cb-color-panel: #ffffff;
+  --cb-color-border: #e4e4e7;
+  --cb-color-text: #18181b;
+  --cb-color-muted: #71717a;
+  --cb-color-accent: #2563eb;
+  --cb-radius: 6px;
+  --cb-font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Theme tokens (overridden per-project via ThemeConfig -> CSS vars on .page-canvas) */
+  --theme-font-family: 'Helvetica Neue', Arial, sans-serif;
+  --theme-font-weight: 400;
+  --theme-color-primary: #111111;
+  --theme-color-secondary: #666666;
+  --theme-color-accent: #2563eb;
+  --theme-border-radius: 4px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--cb-font-ui);
+  color: var(--cb-color-text);
+  background: var(--cb-color-bg);
+}
+
+.cb-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-width: 1100px;
+  overflow: hidden;
+}
+
+.cb-unsupported {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 40px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--cb-color-muted);
+}
+
+/* A4 at 96dpi CSS reference size, scaled down for on-screen editing */
+.cb-page-a4 {
+  width: 794px;
+  height: 1123px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  position: relative;
+  overflow: hidden;
+  font-family: var(--theme-font-family);
+  font-weight: var(--theme-font-weight);
+  color: var(--theme-color-primary);
+}
+
+/* A double-page (spread-spanning) layout's own natural size - exactly two A4 widths, no
+   gap, since the print path clips this into two ordinary A4 sheets at the x=794 seam. */
+.cb-spread-a4 {
+  width: 1588px;
+  height: 1123px;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--theme-font-family);
+  font-weight: var(--theme-font-weight);
+  color: var(--theme-color-primary);
+}
+
+/* Export renders pages into a dedicated popup window (see PrintExportButton) rather than
+   a hidden node in the main document, so the print dialog's "100%" scale is measured
+   against a plain, unscaled browser window instead of the toolbox iframe's own layout. */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  .cb-page-a4 {
+    box-shadow: none;
+    page-break-after: always;
+  }
+}

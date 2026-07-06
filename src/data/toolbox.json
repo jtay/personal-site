@@ -30,5 +30,12 @@
     "image": "/assets/tools/json-tree.png",
     "htmlPath": "tools/json-tree-viewer.html",
     "color": "#ffffff"
+  },
+  {
+    "slug": "catalogue-builder",
+    "title": "Shopify Catalogue Builder",
+    "subtitle": "Build a print-ready A4 PDF product catalogue from your Shopify storefront.",
+    "htmlPath": "tools/catalogue-builder/index.html",
+    "color": "#f4f4f5"
   }
 ]

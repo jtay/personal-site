@@ -1,5 +1,8 @@
 export type VariantDisplayStyle = 'none' | 'count' | 'list' | 'swatches';
 
+/** How heading text is cased across every layout - a single brand-wide typographic choice. */
+export type HeadingCaseStyle = 'normal' | 'uppercase';
+
 export interface ThemeConfig {
   fontFamily: string;
   fontWeight: number;
@@ -11,6 +14,9 @@ export interface ThemeConfig {
   iconSet: 'outline' | 'solid';
   /** How product variants (size/flavor/etc) are surfaced on cards and the hero-product layout. */
   variantDisplay: VariantDisplayStyle;
+  /** Brand mark, referenced by asset id. Used by cover/back-cover/section-divider layouts that show a logo. */
+  logoAssetId: string | null;
+  headingCase: HeadingCaseStyle;
 }
 
 export const DEFAULT_THEME: ThemeConfig = {
@@ -22,8 +28,15 @@ export const DEFAULT_THEME: ThemeConfig = {
   borderRadius: 4,
   productCardVariant: 'minimal',
   iconSet: 'outline',
-  variantDisplay: 'none'
+  variantDisplay: 'none',
+  logoAssetId: null,
+  headingCase: 'normal'
 };
+
+/** Shared by every layout's heading elements so the uppercase/letter-spacing choice is applied consistently brand-wide. */
+export function headingStyle(theme: ThemeConfig): React.CSSProperties {
+  return theme.headingCase === 'uppercase' ? { textTransform: 'uppercase', letterSpacing: 1 } : {};
+}
 
 /** Maps a ThemeConfig onto the CSS custom properties consumed by global.css / layouts. */
 export function themeToCssVars(theme: ThemeConfig): React.CSSProperties {

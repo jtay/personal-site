@@ -2,15 +2,32 @@ import type { LayoutDefinition, LayoutRenderProps } from './types';
 import { formatMoney } from '../domain/money';
 import { CodeSlot } from '../components/CodeSlot';
 import { VariantDisplay } from '../components/VariantDisplay';
+import { SlotHotspot } from '../components/SlotHotspot';
 
-const HeroProductLayout: React.FC<LayoutRenderProps> = ({ slots, theme, shopDomain }) => {
+const HeroProductLayout: React.FC<LayoutRenderProps> = ({
+  slots,
+  theme,
+  shopDomain,
+  selectedSlotId,
+  onSlotSelect,
+  onSlotDropProduct
+}) => {
   const product = slots.featuredProduct?.type === 'product' ? slots.featuredProduct.product : null;
   const notes = slots.notes?.type === 'text' ? slots.notes.value : '';
   const codeValue = slots.scanCode?.type === 'code' ? slots.scanCode : null;
 
   return (
     <div className="cb-page-a4" style={{ display: 'flex' }}>
-      <div style={{ flex: '1 1 55%', background: '#f2f2f2' }}>
+      <SlotHotspot
+        slotId="featuredProduct"
+        label="Featured Product"
+        selected={selectedSlotId === 'featuredProduct'}
+        onSelect={onSlotSelect}
+        onDropProduct={onSlotDropProduct}
+        empty={!product}
+        emptyHint="Click, then add a product from the library"
+        style={{ flex: '1 1 55%', background: '#f2f2f2' }}
+      >
         {product?.featuredImage && (
           <img
             src={product.featuredImage.url}
@@ -18,7 +35,7 @@ const HeroProductLayout: React.FC<LayoutRenderProps> = ({ slots, theme, shopDoma
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         )}
-      </div>
+      </SlotHotspot>
       <div style={{ flex: '1 1 45%', padding: '48px 36px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         <h2 style={{ fontSize: 28, margin: 0, color: 'var(--theme-color-primary)' }}>{product?.title ?? 'Featured Product'}</h2>
         {product && (
@@ -27,13 +44,27 @@ const HeroProductLayout: React.FC<LayoutRenderProps> = ({ slots, theme, shopDoma
           </div>
         )}
         {product && <VariantDisplay variants={product.variants} theme={theme} />}
-        <p style={{ fontSize: 13, color: 'var(--theme-color-secondary)', lineHeight: 1.6 }}>
-          {notes || product?.description}
-        </p>
+        <SlotHotspot
+          slotId="notes"
+          label="Notes"
+          selected={selectedSlotId === 'notes'}
+          onSelect={onSlotSelect}
+          style={{ minHeight: 20 }}
+        >
+          <p style={{ fontSize: 13, color: 'var(--theme-color-secondary)', lineHeight: 1.6, margin: 0 }}>
+            {notes || product?.description}
+          </p>
+        </SlotHotspot>
         {codeValue && (
-          <div style={{ marginTop: 'auto' }}>
+          <SlotHotspot
+            slotId="scanCode"
+            label="Scan Code"
+            selected={selectedSlotId === 'scanCode'}
+            onSelect={onSlotSelect}
+            style={{ marginTop: 'auto' }}
+          >
             <CodeSlot value={codeValue} slots={slots} shopDomain={shopDomain} />
-          </div>
+          </SlotHotspot>
         )}
       </div>
     </div>

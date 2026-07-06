@@ -4,6 +4,7 @@ import { getProductsForCollectionCached } from '../shopify/cache';
 import type { ShopifyProduct } from '../domain/product';
 import type { Page } from '../domain/project';
 import { getLayout } from '../layouts/registry';
+import { applyProductToSlot } from '../domain/slot';
 import { sectionTitle, button } from './panelStyles';
 
 /** Which page numbers (1-indexed) each product already appears on, across every product/productGrid slot. */
@@ -58,18 +59,9 @@ export const CollectionBrowser: React.FC = () => {
   const canAcceptGrid = activeSlotSchema?.type === 'productGrid';
 
   const addProduct = (product: ShopifyProduct) => {
-    if (!activePage || !selectedSlotId) return;
-    const current = activePage.slots[selectedSlotId];
-    if (canAcceptProduct) {
-      const cardCode = current?.type === 'product' ? current.cardCode : null;
-      setSlotValue(activePage.id, selectedSlotId, { type: 'product', product, cardCode });
-    } else if (canAcceptGrid) {
-      const existing = current?.type === 'productGrid' ? current.products : [];
-      const cardCode = current?.type === 'productGrid' ? current.cardCode : null;
-      const max = activeSlotSchema?.maxItems ?? Infinity;
-      if (existing.some((p) => p.id === product.id) || existing.length >= max) return;
-      setSlotValue(activePage.id, selectedSlotId, { type: 'productGrid', products: [...existing, product], cardCode });
-    }
+    if (!activePage || !selectedSlotId || !activeSlotSchema) return;
+    const next = applyProductToSlot(activeSlotSchema, activePage.slots[selectedSlotId], product);
+    if (next) setSlotValue(activePage.id, selectedSlotId, next);
   };
 
   const productPageUsage = useMemo(() => computeProductPageUsage(project.pages), [project.pages]);
@@ -103,17 +95,23 @@ export const CollectionBrowser: React.FC = () => {
       {activeCollectionId && (
         <>
           <div style={{ ...sectionTitle, marginTop: 12 }}>Products</div>
-          {!canAcceptProduct && !canAcceptGrid && (
-            <div style={{ fontSize: 11, color: 'var(--cb-color-muted)', marginBottom: 6 }}>
-              Select a product or product-grid slot on the canvas to enable adding.
-            </div>
-          )}
+          <div style={{ fontSize: 11, color: 'var(--cb-color-muted)', marginBottom: 6 }}>
+            Drag a product onto an image/product slot on the canvas, or select a slot and click Add.
+          </div>
           {loading && <div style={{ fontSize: 12 }}>Loading…</div>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 320, overflowY: 'auto' }}>
             {products.map((product) => {
               const pageNumbers = productPageUsage.get(product.id);
               return (
-                <div key={product.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div
+                  key={product.id}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.effectAllowed = 'copy';
+                    e.dataTransfer.setData('application/json', JSON.stringify(product));
+                  }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'grab' }}
+                >
                   {product.featuredImage && (
                     <img
                       src={product.featuredImage.url}

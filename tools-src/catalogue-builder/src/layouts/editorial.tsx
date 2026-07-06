@@ -1,6 +1,8 @@
 import type { LayoutDefinition, LayoutRenderProps } from './types';
+import { headingStyle } from '../domain/theme';
+import { SlotHotspot } from '../components/SlotHotspot';
 
-const EditorialLayout: React.FC<LayoutRenderProps> = ({ slots, assets }) => {
+const EditorialLayout: React.FC<LayoutRenderProps> = ({ slots, theme, assets, selectedSlotId, onSlotSelect }) => {
   const imageSlot = slots.image;
   const asset = imageSlot?.type === 'image' && imageSlot.assetId ? assets[imageSlot.assetId] : undefined;
   const heading = slots.heading?.type === 'text' ? slots.heading.value : '';
@@ -9,28 +11,67 @@ const EditorialLayout: React.FC<LayoutRenderProps> = ({ slots, assets }) => {
 
   return (
     <div className="cb-page-a4" style={{ padding: '48px 40px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-      {heading && <h1 style={{ fontSize: 30, margin: 0, color: 'var(--theme-color-primary)' }}>{heading}</h1>}
+      <SlotHotspot
+        slotId="heading"
+        label="Heading"
+        selected={selectedSlotId === 'heading'}
+        onSelect={onSlotSelect}
+        empty={!heading}
+        emptyHint="Click to add heading"
+        style={{ minHeight: 38 }}
+      >
+        {heading && <h1 style={{ fontSize: 30, margin: 0, color: 'var(--theme-color-primary)', ...headingStyle(theme) }}>{heading}</h1>}
+      </SlotHotspot>
       <div style={{ display: 'flex', gap: 24, flex: 1, minHeight: 0 }}>
         <div style={{ flex: '1 1 45%', display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {pullQuote && (
-            <blockquote
-              style={{
-                margin: 0,
-                fontSize: 20,
-                fontStyle: 'italic',
-                color: 'var(--theme-color-accent)',
-                borderLeft: '3px solid var(--theme-color-accent)',
-                paddingLeft: 16
-              }}
-            >
-              {pullQuote}
-            </blockquote>
-          )}
-          <p style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--theme-color-secondary)', whiteSpace: 'pre-wrap' }}>{body}</p>
+          <SlotHotspot
+            slotId="pullQuote"
+            label="Pull Quote"
+            selected={selectedSlotId === 'pullQuote'}
+            onSelect={onSlotSelect}
+            empty={!pullQuote}
+            emptyHint="Click to add a pull quote"
+            style={{ minHeight: 24 }}
+          >
+            {pullQuote && (
+              <blockquote
+                style={{
+                  margin: 0,
+                  fontSize: 20,
+                  fontStyle: 'italic',
+                  color: 'var(--theme-color-accent)',
+                  borderLeft: '3px solid var(--theme-color-accent)',
+                  paddingLeft: 16
+                }}
+              >
+                {pullQuote}
+              </blockquote>
+            )}
+          </SlotHotspot>
+          <SlotHotspot
+            slotId="body"
+            label="Body Text"
+            selected={selectedSlotId === 'body'}
+            onSelect={onSlotSelect}
+            empty={!body}
+            emptyHint="Click to add body copy"
+            style={{ flex: 1, minHeight: 40 }}
+          >
+            <p style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--theme-color-secondary)', whiteSpace: 'pre-wrap', margin: 0 }}>
+              {body}
+            </p>
+          </SlotHotspot>
         </div>
-        <div style={{ flex: '1 1 55%', background: '#f2f2f2', borderRadius: 'var(--theme-border-radius)', overflow: 'hidden' }}>
+        <SlotHotspot
+          slotId="image"
+          label="Image"
+          selected={selectedSlotId === 'image'}
+          onSelect={onSlotSelect}
+          empty={!asset}
+          style={{ flex: '1 1 55%', background: '#f2f2f2', borderRadius: 'var(--theme-border-radius)', overflow: 'hidden' }}
+        >
           {asset && <img src={asset.printDataUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-        </div>
+        </SlotHotspot>
       </div>
     </div>
   );

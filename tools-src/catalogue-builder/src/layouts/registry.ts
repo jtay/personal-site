@@ -1,17 +1,31 @@
 import type { LayoutDefinition } from './types';
 import { coverLayout } from './cover';
+import { coverSplitLayout } from './cover-split';
+import { coverMinimalLayout } from './cover-minimal';
 import { productGridLayout } from './product-grid';
+import { productGridMediumLayout } from './product-grid-medium';
 import { productGridLargeLayout } from './product-grid-large';
 import { productGridDenseLayout } from './product-grid-dense';
+import { productListLayout } from './product-list';
 import { heroProductLayout } from './hero-product';
 import { heroDuoLayout } from './hero-duo';
+import { heroTriptychLayout } from './hero-triptych';
+import { heroLifestyleLayout } from './hero-lifestyle';
 import { fullBleedImageLayout } from './full-bleed-image';
 import { imageCaptionLayout } from './image-caption';
+import { imageGridQuadLayout } from './image-grid-quad';
+import { lookbookSpreadLayout } from './lookbook-spread';
 import { adPageLayout } from './ad-page';
 import { editorialLayout } from './editorial';
+import { editorialDuoLayout } from './editorial-duo';
+import { quotePageLayout } from './quote-page';
 import { sectionDividerLayout } from './section-divider';
 import { editorialSpreadLayout } from './editorial-spread';
 import { panoramaSpreadLayout } from './panorama-spread';
+import { backCoverLayout } from './back-cover';
+import { tocLayout } from './toc';
+import { orderFormLayout } from './order-form';
+import { priceSheetLayout } from './price-sheet';
 
 const registry = new Map<string, LayoutDefinition>();
 
@@ -64,15 +78,29 @@ export function listLayoutsGrouped(): LayoutGroup[] {
 }
 
 registerLayout(coverLayout);
+registerLayout(coverSplitLayout);
+registerLayout(coverMinimalLayout);
 registerLayout(productGridLayout);
+registerLayout(productGridMediumLayout);
 registerLayout(productGridLargeLayout);
 registerLayout(productGridDenseLayout);
+registerLayout(productListLayout);
 registerLayout(heroProductLayout);
 registerLayout(heroDuoLayout);
+registerLayout(heroTriptychLayout);
+registerLayout(heroLifestyleLayout);
 registerLayout(fullBleedImageLayout);
 registerLayout(imageCaptionLayout);
+registerLayout(imageGridQuadLayout);
+registerLayout(lookbookSpreadLayout);
 registerLayout(adPageLayout);
 registerLayout(editorialLayout);
+registerLayout(editorialDuoLayout);
+registerLayout(quotePageLayout);
 registerLayout(sectionDividerLayout);
 registerLayout(editorialSpreadLayout);
 registerLayout(panoramaSpreadLayout);
+registerLayout(backCoverLayout);
+registerLayout(tocLayout);
+registerLayout(orderFormLayout);
+registerLayout(priceSheetLayout);

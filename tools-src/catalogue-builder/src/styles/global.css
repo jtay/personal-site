@@ -8,6 +8,19 @@
   --cb-radius: 6px;
   --cb-font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
+  /* Spacing scale - used across every panel/rail/flyout instead of one-off px values */
+  --cb-space-1: 4px;
+  --cb-space-2: 8px;
+  --cb-space-3: 12px;
+  --cb-space-4: 16px;
+  --cb-space-5: 24px;
+
+  /* Type scale - used across every panel/rail/flyout instead of one-off px values */
+  --cb-font-xs: 11px;
+  --cb-font-sm: 12px;
+  --cb-font-base: 13px;
+  --cb-font-md: 15px;
+
   /* Theme tokens (overridden per-project via ThemeConfig -> CSS vars on .page-canvas) */
   --theme-font-family: 'Helvetica Neue', Arial, sans-serif;
   --theme-font-weight: 400;
@@ -77,6 +90,500 @@ body {
   font-family: var(--theme-font-family);
   font-weight: var(--theme-font-weight);
   color: var(--theme-color-primary);
+}
+
+.cb-slot-hotspot {
+  position: relative;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition: outline-color 120ms ease;
+}
+
+.cb-slot-hotspot:hover {
+  outline-color: #a1a1aa;
+}
+
+.cb-slot-hotspot--selected,
+.cb-slot-hotspot--selected:hover {
+  outline-color: var(--cb-color-accent);
+}
+
+.cb-slot-hotspot--drop-active,
+.cb-slot-hotspot--drop-active:hover {
+  outline: 2px dashed var(--cb-color-accent);
+  background-color: rgba(37, 99, 235, 0.08);
+}
+
+.cb-slot-label {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 5;
+  background: var(--cb-color-accent);
+  color: #fff;
+  font-family: var(--cb-font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.cb-slot-empty-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-family: var(--cb-font-ui);
+  font-size: 12px;
+  color: #a1a1aa;
+  text-align: center;
+  padding: 12px;
+}
+
+/* Icon rail - replaces the old two stacked accordion sidebars */
+.cb-icon-rail {
+  width: 48px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0;
+  border-right: 1px solid var(--cb-color-border);
+  background: var(--cb-color-panel);
+}
+
+.cb-icon-rail-btn {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: var(--cb-radius);
+  color: var(--cb-color-muted);
+  cursor: pointer;
+}
+
+.cb-icon-rail-btn:hover {
+  background: var(--cb-color-bg);
+  color: var(--cb-color-text);
+}
+
+.cb-icon-rail-btn--active {
+  background: var(--cb-color-accent);
+  color: #fff;
+}
+
+.cb-icon-rail-btn--bottom {
+  margin-top: auto;
+}
+
+.cb-icon-rail-dot {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d4d4d8;
+  border: 1.5px solid var(--cb-color-panel);
+}
+
+.cb-icon-rail-dot--on {
+  background: #22c55e;
+}
+
+/* Flyout panel - opens next to the icon rail, one at a time */
+.cb-flyout {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--cb-color-border);
+  background: var(--cb-color-panel);
+}
+
+.cb-flyout-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--cb-color-border);
+}
+
+.cb-flyout-close {
+  border: none;
+  background: none;
+  padding: 2px;
+  cursor: pointer;
+  color: var(--cb-color-muted);
+  display: flex;
+}
+
+.cb-flyout-close:hover {
+  color: var(--cb-color-text);
+}
+
+.cb-flyout-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* Inspector panel - always visible, contextual to the current selection */
+.cb-inspector {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--cb-color-border);
+  background: var(--cb-color-panel);
+}
+
+.cb-inspector-header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--cb-color-border);
+}
+
+.cb-inspector-header-page {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cb-inspector-header-layout {
+  font-size: 11px;
+  color: var(--cb-color-muted);
+}
+
+.cb-inspector-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.cb-inspector-empty {
+  font-size: 12px;
+  color: var(--cb-color-muted);
+}
+
+.cb-inspector-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--cb-color-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.cb-inspector-back:hover {
+  color: var(--cb-color-text);
+}
+
+.cb-slot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cb-slot-list-hint {
+  font-size: 11px;
+  color: var(--cb-color-muted);
+  margin-bottom: 8px;
+}
+
+.cb-slot-list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 6px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cb-slot-list-item:hover {
+  background: var(--cb-color-bg);
+}
+
+.cb-slot-list-item svg {
+  margin-left: auto;
+  color: var(--cb-color-muted);
+  flex-shrink: 0;
+}
+
+.cb-slot-list-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cb-color-border);
+  flex-shrink: 0;
+}
+
+.cb-slot-list-dot--filled {
+  background: var(--cb-color-accent);
+}
+
+.cb-slot-list-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Page filmstrip - bottom, drag to reorder */
+.cb-filmstrip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--cb-color-border);
+  background: var(--cb-color-panel);
+  overflow-x: auto;
+}
+
+.cb-filmstrip-card {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.cb-filmstrip-card > div:first-child {
+  border-radius: 4px;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+  transition: outline-color 120ms ease;
+}
+
+.cb-filmstrip-card:hover > div:first-child {
+  outline-color: #a1a1aa;
+}
+
+.cb-filmstrip-card--selected > div:first-child {
+  outline-color: var(--cb-color-accent);
+}
+
+.cb-filmstrip-card--drop-target > div:first-child {
+  outline: 2px dashed var(--cb-color-accent);
+}
+
+.cb-filmstrip-card-actions {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: none;
+  gap: 2px;
+}
+
+.cb-filmstrip-card:hover .cb-filmstrip-card-actions {
+  display: flex;
+}
+
+.cb-filmstrip-card-actions button {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--cb-color-text);
+  cursor: pointer;
+}
+
+.cb-filmstrip-card-actions button:hover {
+  background: #fff;
+}
+
+.cb-filmstrip-card-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--cb-color-muted);
+}
+
+.cb-filmstrip-card-badge {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--cb-color-accent);
+}
+
+.cb-filmstrip-add {
+  flex-shrink: 0;
+  width: 64px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--cb-color-border);
+  border-radius: 4px;
+  background: none;
+  color: var(--cb-color-muted);
+  cursor: pointer;
+}
+
+.cb-filmstrip-add:hover {
+  border-color: var(--cb-color-accent);
+  color: var(--cb-color-accent);
+}
+
+/* Command palette (Cmd/Ctrl+K) */
+.cb-palette-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+  z-index: 100;
+}
+
+.cb-palette {
+  width: 480px;
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cb-color-panel);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.cb-palette-search {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--cb-color-border);
+  color: var(--cb-color-muted);
+}
+
+.cb-palette-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--cb-color-text);
+  background: none;
+}
+
+.cb-palette-list {
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.cb-palette-empty {
+  padding: 16px;
+  font-size: 12px;
+  color: var(--cb-color-muted);
+  text-align: center;
+}
+
+.cb-palette-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 5px;
+  background: none;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cb-palette-item--active {
+  background: var(--cb-color-accent);
+  color: #fff;
+}
+
+.cb-palette-item--active .cb-palette-hint {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cb-palette-hint {
+  font-size: 11px;
+  color: var(--cb-color-muted);
+  flex-shrink: 0;
+}
+
+/* Toasts */
+.cb-toast-stack {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+}
+
+.cb-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #18181b;
+  color: #fff;
+  font-size: 13px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cb-toast-action {
+  border: none;
+  background: none;
+  color: #60a5fa;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+@media print {
+  .cb-slot-hotspot {
+    outline: none !important;
+  }
+  .cb-slot-label,
+  .cb-slot-empty-hint {
+    display: none !important;
+  }
 }
 
 /* Export renders pages into a dedicated popup window (see PrintExportButton) rather than

@@ -1,20 +1,21 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { TopBar } from './editor/TopBar';
-import { AccordionSection } from './editor/AccordionSection';
-import { ResizableSidebar } from './editor/ResizableSidebar';
 import { ConnectionPanel } from './editor/ConnectionPanel';
 import { CollectionBrowser } from './editor/CollectionBrowser';
-import { PageList } from './editor/PageList';
 import { LayoutPicker } from './editor/LayoutPicker';
 import { PageCanvas } from './editor/PageCanvas';
-import { SlotInspector } from './editor/SlotInspector';
+import { PageFilmstrip } from './editor/PageFilmstrip';
+import { InspectorPanel } from './editor/InspectorPanel';
 import { ThemePanel } from './editor/ThemePanel';
-import { loadSidebarWidths, saveSidebarWidths, type SidebarWidths } from './persistence/sidebarWidthStorage';
+import { IconRail, type FlyoutId } from './editor/IconRail';
+import { FlyoutPanel } from './editor/FlyoutPanel';
+import { CommandPalette } from './editor/CommandPalette';
+import { ToastStack } from './editor/ToastStack';
+import { useCatalogueStore } from './state/store';
+import { useBookNavigation } from './editor/useBookNavigation';
+import { downloadProject } from './persistence/save';
 
 const MIN_WIDTH = 1100;
-const DEFAULT_SIDEBAR_WIDTHS: SidebarWidths = { left: 260, right: 280 };
-const SIDEBAR_MIN = 200;
-const SIDEBAR_MAX = 480;
 
 function subscribeToResize(callback: () => void): () => void {
   window.addEventListener('resize', callback);
@@ -25,20 +26,78 @@ function useIsDesktopWidth(): boolean {
   return useSyncExternalStore(subscribeToResize, () => window.innerWidth >= MIN_WIDTH);
 }
 
-/** Sidebar widths persist per viewport-width bucket, so a laptop and an ultrawide monitor keep separate layouts. */
-function useSidebarWidths(): [SidebarWidths, (next: SidebarWidths) => void] {
-  const [widths, setWidths] = useState<SidebarWidths>(() => loadSidebarWidths(window.innerWidth, DEFAULT_SIDEBAR_WIDTHS));
+const FLYOUT_TITLES: Record<FlyoutId, string> = {
+  products: 'Products',
+  layouts: 'Add a page',
+  design: 'Design',
+  connection: 'Shopify connection'
+};
+
+function isTypingInField(): boolean {
+  const el = document.activeElement;
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (el as HTMLElement).isContentEditable;
+}
+
+/** Global keyboard shortcuts - guarded so they never hijack typing in a form field. */
+function useGlobalShortcuts(onOpenPalette: () => void) {
+  const selectedPageId = useCatalogueStore((s) => s.selectedPageId);
+  const removePage = useCatalogueStore((s) => s.removePage);
+  const duplicatePage = useCatalogueStore((s) => s.duplicatePage);
+  const project = useCatalogueStore((s) => s.project);
+  const { goToPrevView, goToNextView } = useBookNavigation();
 
   useEffect(() => {
-    saveSidebarWidths(window.innerWidth, widths);
-  }, [widths]);
+    const handler = (e: KeyboardEvent) => {
+      const meta = e.metaKey || e.ctrlKey;
 
-  return [widths, setWidths];
+      if (meta && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        onOpenPalette();
+        return;
+      }
+
+      if (isTypingInField()) return;
+
+      if (meta && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        downloadProject(project);
+        return;
+      }
+      if (meta && e.key.toLowerCase() === 'd') {
+        if (selectedPageId) {
+          e.preventDefault();
+          duplicatePage(selectedPageId);
+        }
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        goToPrevView();
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        goToNextView();
+        return;
+      }
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedPageId) {
+        e.preventDefault();
+        removePage(selectedPageId);
+      }
+    };
+
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [selectedPageId, removePage, duplicatePage, project, goToPrevView, goToNextView, onOpenPalette]);
 }
 
 export const App: React.FC = () => {
   const isDesktopWidth = useIsDesktopWidth();
-  const [sidebarWidths, setSidebarWidths] = useSidebarWidths();
+  const connection = useCatalogueStore((s) => s.project.connection);
+  const [activeFlyout, setActiveFlyout] = useState<FlyoutId | null>(null);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  useGlobalShortcuts(() => setPaletteOpen(true));
 
   if (!isDesktopWidth) {
     return (
@@ -48,58 +107,30 @@ export const App: React.FC = () => {
     );
   }
 
+  const toggleFlyout = (id: FlyoutId) => setActiveFlyout((cur) => (cur === id ? null : id));
+
   return (
     <div className="cb-app">
-      <TopBar />
-      <div
-        style={{
-          flex: 1,
-          minHeight: 0,
-          display: 'grid',
-          gridTemplateColumns: `${sidebarWidths.left}px 1fr ${sidebarWidths.right}px`,
-          overflow: 'hidden'
-        }}
-      >
-        <ResizableSidebar
-          width={sidebarWidths.left}
-          onResize={(left) => setSidebarWidths({ ...sidebarWidths, left })}
-          minWidth={SIDEBAR_MIN}
-          maxWidth={SIDEBAR_MAX}
-          handleSide="right"
-          borderStyle={{ borderRight: '1px solid var(--cb-color-border)' }}
-        >
-          <AccordionSection id="connection" title="Shopify Connection">
-            <ConnectionPanel />
-          </AccordionSection>
-          <AccordionSection id="catalog" title="Catalog">
-            <CollectionBrowser />
-          </AccordionSection>
-        </ResizableSidebar>
+      <TopBar onOpenPalette={() => setPaletteOpen(true)} />
+      <div style={{ flex: 1, minHeight: 0, display: 'flex', overflow: 'hidden' }}>
+        <IconRail active={activeFlyout} onToggle={toggleFlyout} connected={!!connection} />
+
+        {activeFlyout && (
+          <FlyoutPanel title={FLYOUT_TITLES[activeFlyout]} onClose={() => setActiveFlyout(null)}>
+            {activeFlyout === 'products' && <CollectionBrowser />}
+            {activeFlyout === 'layouts' && <LayoutPicker />}
+            {activeFlyout === 'design' && <ThemePanel />}
+            {activeFlyout === 'connection' && <ConnectionPanel />}
+          </FlyoutPanel>
+        )}
 
         <PageCanvas />
-
-        <ResizableSidebar
-          width={sidebarWidths.right}
-          onResize={(right) => setSidebarWidths({ ...sidebarWidths, right })}
-          minWidth={SIDEBAR_MIN}
-          maxWidth={SIDEBAR_MAX}
-          handleSide="left"
-          borderStyle={{ borderLeft: '1px solid var(--cb-color-border)' }}
-        >
-          <AccordionSection id="add-page" title="Add Page">
-            <LayoutPicker />
-          </AccordionSection>
-          <AccordionSection id="pages" title="Pages">
-            <PageList />
-          </AccordionSection>
-          <AccordionSection id="slot" title="Slot">
-            <SlotInspector />
-          </AccordionSection>
-          <AccordionSection id="theme" title="Theme" defaultOpen={false}>
-            <ThemePanel />
-          </AccordionSection>
-        </ResizableSidebar>
+        <InspectorPanel />
       </div>
+      <PageFilmstrip onAddPage={() => setActiveFlyout('layouts')} />
+
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onOpenFlyout={setActiveFlyout} />
+      <ToastStack />
     </div>
   );
 };

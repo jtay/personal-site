@@ -2,6 +2,7 @@ import type { ProductCardVariant } from './types';
 import type { CardCodeConfig } from '../domain/code';
 import { MinimalProductCard } from './minimal';
 import { BoxedProductCard } from './boxed';
+import { RowProductCard } from './row';
 import { withCode } from './withCode';
 
 // Note: withCode() composition still lives in ./withCode.tsx, but is applied dynamically
@@ -33,3 +34,4 @@ export function resolveProductCard(baseId: string, cardCode: CardCodeConfig | nu
 
 registerProductCard({ id: 'minimal', name: 'Minimal', Component: MinimalProductCard });
 registerProductCard({ id: 'boxed', name: 'Boxed', Component: BoxedProductCard });
+registerProductCard({ id: 'row', name: 'Row (wholesale)', Component: RowProductCard });

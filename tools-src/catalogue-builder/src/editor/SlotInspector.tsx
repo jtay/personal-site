@@ -10,6 +10,7 @@ import {
   type CodeGraphicType
 } from '../domain/code';
 import { CodeGraphic } from '../components/CodeGraphic';
+import { IconGrip } from '../components/icons';
 import { sectionTitle, input, button } from './panelStyles';
 
 export const SlotInspector: React.FC = () => {
@@ -90,11 +91,31 @@ export const SlotInspector: React.FC = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12 }}>
           {slotValue.products.length === 0 && (
             <span style={{ color: 'var(--cb-color-muted)' }}>
-              Add up to {slotSchema.maxItems ?? '∞'} products from the Catalog panel.
+              Drag products from the Products panel onto this slot on the canvas, or add up to{' '}
+              {slotSchema.maxItems ?? '∞'} from there directly.
             </span>
           )}
           {slotValue.products.map((product, index) => (
-            <div key={product.id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div
+              key={product.id}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', String(index));
+              }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const fromIndex = Number(e.dataTransfer.getData('text/plain'));
+                if (Number.isNaN(fromIndex) || fromIndex === index) return;
+                const products = [...slotValue.products];
+                const [moved] = products.splice(fromIndex, 1);
+                products.splice(index, 0, moved);
+                setSlotValue(page.id, slotSchema.id, { ...slotValue, products });
+              }}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'grab' }}
+            >
+              <IconGrip size={12} />
               <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{product.title}</span>
               <button
                 style={{ ...button, padding: '2px 6px' }}

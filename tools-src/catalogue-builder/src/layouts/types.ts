@@ -1,6 +1,7 @@
 import type { SlotSchema, SlotValue } from '../domain/slot';
 import type { ThemeConfig } from '../domain/theme';
 import type { AssetLibrary } from '../domain/asset';
+import type { ShopifyProduct } from '../domain/product';
 
 export interface LayoutRenderProps {
   slots: Record<string, SlotValue>;
@@ -8,6 +9,11 @@ export interface LayoutRenderProps {
   assets: AssetLibrary;
   /** Needed to resolve a 'code' slot's productUrl data source. Null when not connected. */
   shopDomain: string | null;
+  /** Undefined during PDF export, where nothing is selectable. */
+  selectedSlotId?: string | null;
+  onSlotSelect?: (slotId: string) => void;
+  /** Undefined during PDF export. Layouts pass this to their product/productGrid slot's SlotHotspot only. */
+  onSlotDropProduct?: (slotId: string, product: ShopifyProduct) => void;
 }
 
 export interface LayoutDefinition {

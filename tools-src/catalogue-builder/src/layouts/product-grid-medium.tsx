@@ -3,7 +3,7 @@ import { headingStyle } from '../domain/theme';
 import { resolveProductCard } from '../product-cards/registry';
 import { SlotHotspot } from '../components/SlotHotspot';
 
-const ProductGridLargeLayout: React.FC<LayoutRenderProps> = ({
+const ProductGridMediumLayout: React.FC<LayoutRenderProps> = ({
   slots,
   theme,
   shopDomain,
@@ -17,7 +17,7 @@ const ProductGridLargeLayout: React.FC<LayoutRenderProps> = ({
   const Card = resolveProductCard(theme.productCardVariant, productsSlot?.cardCode ?? null).Component;
 
   return (
-    <div className="cb-page-a4" style={{ padding: '40px 36px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div className="cb-page-a4" style={{ padding: '36px 32px', display: 'flex', flexDirection: 'column', gap: 20 }}>
       <SlotHotspot
         slotId="heading"
         label="Heading"
@@ -25,9 +25,9 @@ const ProductGridLargeLayout: React.FC<LayoutRenderProps> = ({
         onSelect={onSlotSelect}
         empty={!heading}
         emptyHint="Click to add heading"
-        style={{ minHeight: 34 }}
+        style={{ minHeight: 30 }}
       >
-        {heading && <h2 style={{ fontSize: 26, margin: 0, color: 'var(--theme-color-primary)', ...headingStyle(theme) }}>{heading}</h2>}
+        {heading && <h2 style={{ fontSize: 24, margin: 0, color: 'var(--theme-color-primary)', ...headingStyle(theme) }}>{heading}</h2>}
       </SlotHotspot>
       <SlotHotspot
         slotId="products"
@@ -37,9 +37,9 @@ const ProductGridLargeLayout: React.FC<LayoutRenderProps> = ({
         onDropProduct={onSlotDropProduct}
         empty={products.length === 0}
         emptyHint="Click, then add products from the library"
-        style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 32, alignContent: 'start' }}
+        style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, alignContent: 'start' }}
       >
-        {products.slice(0, 4).map((product) => (
+        {products.slice(0, 6).map((product) => (
           <Card key={product.id} product={product} theme={theme} shopDomain={shopDomain} />
         ))}
       </SlotHotspot>
@@ -47,15 +47,15 @@ const ProductGridLargeLayout: React.FC<LayoutRenderProps> = ({
   );
 };
 
-export const productGridLargeLayout: LayoutDefinition = {
-  id: 'product-grid-large',
-  name: 'Large (2x2)',
+export const productGridMediumLayout: LayoutDefinition = {
+  id: 'product-grid-medium',
+  name: 'Medium (3x2)',
   thumbnail: '',
   familyId: 'product-grid',
   familyName: 'Product Grid',
   slots: [
-    { id: 'heading', type: 'text', label: 'Heading', placeholder: 'Featured' },
-    { id: 'products', type: 'productGrid', label: 'Products', maxItems: 4 }
+    { id: 'heading', type: 'text', label: 'Heading', placeholder: 'This Week' },
+    { id: 'products', type: 'productGrid', label: 'Products', maxItems: 6 }
   ],
-  Component: ProductGridLargeLayout
+  Component: ProductGridMediumLayout
 };

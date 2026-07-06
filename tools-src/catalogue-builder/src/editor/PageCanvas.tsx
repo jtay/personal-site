@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import { useCatalogueStore } from '../state/store';
 import { getLayout } from '../layouts/registry';
 import { themeToCssVars } from '../domain/theme';
-import { computeBookViews, findViewIndexForPage, primaryPageIdForView, type BookView } from '../domain/book';
+import { applyProductToSlot } from '../domain/slot';
+import type { ShopifyProduct } from '../domain/product';
+import type { BookView } from '../domain/book';
 import type { Page } from '../domain/project';
+import { useBookNavigation } from './useBookNavigation';
 
 const PAGE_WIDTH = 794;
 const PAGE_HEIGHT = 1123;
@@ -46,7 +49,27 @@ const PageSurface: React.FC<{ page: Page; scale: number; width?: number; focused
   onSelect
 }) => {
   const project = useCatalogueStore((s) => s.project);
+  const selectedPageId = useCatalogueStore((s) => s.selectedPageId);
+  const selectedSlotId = useCatalogueStore((s) => s.selectedSlotId);
+  const selectPage = useCatalogueStore((s) => s.selectPage);
+  const selectSlot = useCatalogueStore((s) => s.selectSlot);
+  const setSlotValue = useCatalogueStore((s) => s.setSlotValue);
   const layout = getLayout(page.layoutId);
+
+  // A slot click both focuses this page (so the schema/value lookup elsewhere is unambiguous
+  // when the same slot id exists on the sibling page of a spread) and selects the slot itself.
+  const handleSlotSelect = (slotId: string) => {
+    if (selectedPageId !== page.id) selectPage(page.id);
+    selectSlot(slotId);
+  };
+
+  const handleSlotDropProduct = (slotId: string, product: ShopifyProduct) => {
+    const schema = layout.slots.find((s) => s.id === slotId);
+    if (!schema) return;
+    const next = applyProductToSlot(schema, page.slots[slotId], product);
+    if (next) setSlotValue(page.id, slotId, next);
+    handleSlotSelect(slotId);
+  };
 
   return (
     <div
@@ -68,6 +91,9 @@ const PageSurface: React.FC<{ page: Page; scale: number; width?: number; focused
           theme={project.theme}
           assets={project.assets}
           shopDomain={project.connection?.shopDomain ?? null}
+          selectedSlotId={selectedPageId === page.id ? selectedSlotId : null}
+          onSlotSelect={handleSlotSelect}
+          onSlotDropProduct={handleSlotDropProduct}
         />
       </div>
     </div>
@@ -92,15 +118,9 @@ function viewLabel(view: BookView): string {
 }
 
 export const PageCanvas: React.FC = () => {
-  const pages = useCatalogueStore((s) => s.project.pages);
   const selectedPageId = useCatalogueStore((s) => s.selectedPageId);
-  const selectedSlotId = useCatalogueStore((s) => s.selectedSlotId);
-  const selectSlot = useCatalogueStore((s) => s.selectSlot);
   const selectPage = useCatalogueStore((s) => s.selectPage);
-
-  const views = computeBookViews(pages);
-  const viewIndex = findViewIndexForPage(views, selectedPageId);
-  const view = views[viewIndex];
+  const { views, viewIndex, view, goToView } = useBookNavigation();
 
   const isWide = view?.kind === 'spread' || view?.kind === 'fullSpread';
   const contentWidth = isWide ? PAGE_WIDTH * 2 + SPREAD_GAP : PAGE_WIDTH;
@@ -114,22 +134,20 @@ export const PageCanvas: React.FC = () => {
     );
   }
 
-  const goToView = (nextIndex: number) => {
-    if (nextIndex < 0 || nextIndex >= views.length) return;
-    const pageId = primaryPageIdForView(views, nextIndex);
-    if (pageId) selectPage(pageId);
-  };
-
-  const focusedPage =
-    view.kind === 'cover' || view.kind === 'fullSpread'
-      ? view.page
-      : view.left?.id === selectedPageId
-        ? view.left
-        : view.right;
-  const layoutForChips = focusedPage ? getLayout(focusedPage.layoutId) : null;
-
   return (
-    <div style={{ minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: 24, overflow: 'auto' }}>
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        minHeight: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 16,
+        padding: 24,
+        overflow: 'auto'
+      }}
+    >
       <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 12, fontSize: 12, color: 'var(--cb-color-muted)' }}>
         <button onClick={() => goToView(viewIndex - 1)} disabled={viewIndex === 0} style={{ cursor: 'pointer' }}>
           ← Prev
@@ -164,28 +182,6 @@ export const PageCanvas: React.FC = () => {
           )}
         </div>
       </div>
-
-      {layoutForChips && (
-        <div style={{ flexShrink: 0, display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', maxWidth: contentWidth * scale }}>
-          {layoutForChips.slots.map((slotSchema) => (
-            <button
-              key={slotSchema.id}
-              onClick={() => selectSlot(slotSchema.id)}
-              style={{
-                padding: '6px 12px',
-                borderRadius: 4,
-                border: '1px solid var(--cb-color-border)',
-                background: slotSchema.id === selectedSlotId ? 'var(--cb-color-accent)' : '#fff',
-                color: slotSchema.id === selectedSlotId ? '#fff' : 'inherit',
-                fontSize: 12,
-                cursor: 'pointer'
-              }}
-            >
-              {slotSchema.label}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

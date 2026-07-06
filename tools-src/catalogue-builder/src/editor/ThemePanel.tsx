@@ -1,6 +1,7 @@
-import { useCatalogueStore } from '../state/store';
+import { useCatalogueStore, generateAssetId } from '../state/store';
 import { listProductCards } from '../product-cards/registry';
-import { input } from './panelStyles';
+import { processUploadedImage } from '../export/imageDownscale';
+import { input, button } from './panelStyles';
 
 const FONT_OPTIONS = [
   { label: 'Helvetica', value: "'Helvetica Neue', Arial, sans-serif" },
@@ -9,11 +10,62 @@ const FONT_OPTIONS = [
 ];
 
 export const ThemePanel: React.FC = () => {
-  const theme = useCatalogueStore((s) => s.project.theme);
+  const project = useCatalogueStore((s) => s.project);
+  const theme = project.theme;
   const updateTheme = useCatalogueStore((s) => s.updateTheme);
+  const addAsset = useCatalogueStore((s) => s.addAsset);
+
+  const logo = theme.logoAssetId ? project.assets[theme.logoAssetId] : undefined;
+
+  const handleLogoUpload = async (file: File) => {
+    const processed = await processUploadedImage(file);
+    const id = generateAssetId();
+    addAsset({ id, name: file.name, ...processed });
+    updateTheme({ logoAssetId: id });
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ fontSize: 12 }}>
+          Brand Logo
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+            {logo && (
+              <img
+                src={logo.previewDataUrl}
+                alt=""
+                style={{ width: 36, height: 36, objectFit: 'contain', border: '1px solid var(--cb-color-border)', borderRadius: 4, background: '#fff' }}
+              />
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleLogoUpload(file);
+              }}
+            />
+            {logo && (
+              <button style={{ ...button, padding: '4px 8px' }} onClick={() => updateTheme({ logoAssetId: null })}>
+                Remove
+              </button>
+            )}
+          </div>
+          <span style={{ fontSize: 10, color: 'var(--cb-color-muted)' }}>
+            Used by cover, back cover and section divider layouts that include a logo slot.
+          </span>
+        </div>
+
+        <label style={{ fontSize: 12 }}>
+          Heading Case
+          <select
+            style={input}
+            value={theme.headingCase}
+            onChange={(e) => updateTheme({ headingCase: e.target.value as typeof theme.headingCase })}
+          >
+            <option value="normal">Normal</option>
+            <option value="uppercase">Uppercase</option>
+          </select>
+        </label>
         <label style={{ fontSize: 12 }}>
           Font
           <select style={input} value={theme.fontFamily} onChange={(e) => updateTheme({ fontFamily: e.target.value })}>

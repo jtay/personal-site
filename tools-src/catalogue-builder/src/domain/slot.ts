@@ -20,6 +20,31 @@ export type SlotValue =
   | { type: 'productGrid'; products: ShopifyProduct[]; cardCode: CardCodeConfig | null }
   | { type: 'code'; codeType: CodeGraphicType; dataSource: CodeDataSource; boundProductSlotId: string | null };
 
+/**
+ * Shared by the click-to-add flow (CollectionBrowser) and drag-and-drop onto a canvas slot
+ * (PageCanvas), so "assign a product to a slot" has one rule set: replace for a single
+ * product slot, append (respecting maxItems and de-duping) for a grid. Returns null when the
+ * slot can't accept a product, or the grid is already full/contains it.
+ */
+export function applyProductToSlot(
+  schema: SlotSchema,
+  current: SlotValue | undefined,
+  product: ShopifyProduct
+): SlotValue | null {
+  if (schema.type === 'product') {
+    const cardCode = current?.type === 'product' ? current.cardCode : null;
+    return { type: 'product', product, cardCode };
+  }
+  if (schema.type === 'productGrid') {
+    const existing = current?.type === 'productGrid' ? current.products : [];
+    const cardCode = current?.type === 'productGrid' ? current.cardCode : null;
+    const max = schema.maxItems ?? Infinity;
+    if (existing.some((p) => p.id === product.id) || existing.length >= max) return null;
+    return { type: 'productGrid', products: [...existing, product], cardCode };
+  }
+  return null;
+}
+
 export function emptySlotValue(schema: SlotSchema): SlotValue {
   switch (schema.type) {
     case 'text':

@@ -17,6 +17,8 @@ function isSlotFilled(value: SlotValue | undefined): boolean {
       return value.products.length > 0;
     case 'code':
       return true;
+    case 'list':
+      return value.items.length > 0 && value.items.some(item => item.text.trim() !== '');
   }
 }
 

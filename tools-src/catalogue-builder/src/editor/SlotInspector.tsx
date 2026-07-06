@@ -164,6 +164,62 @@ export const SlotInspector: React.FC = () => {
           shopDomain={project.connection?.shopDomain ?? null}
         />
       )}
+
+      {slotValue.type === 'list' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 12 }}>
+          {slotValue.items.map((item, index) => (
+            <div
+              key={item.id}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', String(index));
+              }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const fromIndex = Number(e.dataTransfer.getData('text/plain'));
+                if (Number.isNaN(fromIndex) || fromIndex === index) return;
+                const items = [...slotValue.items];
+                const [moved] = items.splice(fromIndex, 1);
+                items.splice(index, 0, moved);
+                setSlotValue(page.id, slotSchema.id, { ...slotValue, items });
+              }}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'grab' }}
+            >
+              <IconGrip size={12} />
+              <input
+                style={{ ...input, flex: 1 }}
+                value={item.text}
+                placeholder={slotSchema.placeholder}
+                onChange={(e) => {
+                  const items = [...slotValue.items];
+                  items[index] = { ...items[index], text: e.target.value };
+                  setSlotValue(page.id, slotSchema.id, { ...slotValue, items });
+                }}
+              />
+              <button
+                style={{ ...button, padding: '2px 6px' }}
+                onClick={() => {
+                  const items = slotValue.items.filter((i) => i.id !== item.id);
+                  setSlotValue(page.id, slotSchema.id, { ...slotValue, items });
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <button
+            style={{ ...button, alignSelf: 'flex-start' }}
+            onClick={() => {
+              const items = [...slotValue.items, { id: Math.random().toString(36).slice(2, 9), text: '' }];
+              setSlotValue(page.id, slotSchema.id, { ...slotValue, items });
+            }}
+          >
+            Add Item
+          </button>
+        </div>
+      )}
     </div>
   );
 };

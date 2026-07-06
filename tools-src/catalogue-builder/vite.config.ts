@@ -10,5 +10,9 @@ export default defineConfig({
   build: {
     outDir: '../../public/tools/catalogue-builder',
     emptyOutDir: true
+  },
+  server: {
+    port: 5174,
+    strictPort: true
   }
 });

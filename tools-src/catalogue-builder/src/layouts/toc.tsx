@@ -4,7 +4,7 @@ import { SlotHotspot } from '../components/SlotHotspot';
 
 const TocLayout: React.FC<LayoutRenderProps> = ({ slots, theme, selectedSlotId, onSlotSelect }) => {
   const heading = slots.heading?.type === 'text' ? slots.heading.value : '';
-  const entries = slots.entries?.type === 'text' ? slots.entries.value : '';
+  const entries = slots.entries?.type === 'list' ? slots.entries.items : [];
 
   return (
     <div className="cb-page-a4" style={{ padding: '64px 56px', display: 'flex', flexDirection: 'column', gap: 32 }}>
@@ -24,15 +24,15 @@ const TocLayout: React.FC<LayoutRenderProps> = ({ slots, theme, selectedSlotId, 
         label="Entries"
         selected={selectedSlotId === 'entries'}
         onSelect={onSlotSelect}
-        empty={!entries}
-        emptyHint="Click to add one entry per line, e.g. 'New Arrivals ... 04'"
+        empty={entries.length === 0}
+        emptyHint="Click to add entries"
         style={{ flex: 1, minHeight: 60 }}
       >
-        {entries && (
+        {entries.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {entries.split('\n').filter(Boolean).map((line, i) => (
+            {entries.filter(e => e.text).map((entry) => (
               <div
-                key={i}
+                key={entry.id}
                 style={{
                   fontSize: 15,
                   color: 'var(--theme-color-secondary)',
@@ -40,7 +40,7 @@ const TocLayout: React.FC<LayoutRenderProps> = ({ slots, theme, selectedSlotId, 
                   borderBottom: `1px solid ${theme.colorSecondary}33`
                 }}
               >
-                {line}
+                {entry.text}
               </div>
             ))}
           </div>
@@ -59,7 +59,7 @@ export const tocLayout: LayoutDefinition = {
   familyName: 'Back Matter',
   slots: [
     { id: 'heading', type: 'text', label: 'Heading', placeholder: 'Contents' },
-    { id: 'entries', type: 'text', label: 'Entries', placeholder: 'New Arrivals ... 04\nBest Sellers ... 08' }
+    { id: 'entries', type: 'list', label: 'Entries', placeholder: 'New Arrivals ... 04' }
   ],
   Component: TocLayout
 };

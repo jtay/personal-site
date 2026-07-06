@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"npm run dev --prefix tools-src/catalogue-builder\"",
     "build": "tsc -b && vite build",
     "build-content": "tsx scripts/build-content.ts",
     "build:catalogue-builder": "npm install --prefix tools-src/catalogue-builder && npm run build --prefix tools-src/catalogue-builder",
@@ -37,6 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^8.47.0",
     "@typescript-eslint/parser": "^8.47.0",
     "@vitejs/plugin-react": "^5.1.1",
+    "concurrently": "^10.0.3",
     "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",

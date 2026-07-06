@@ -2,7 +2,7 @@ import type { ShopifyProduct } from './product';
 import type { CardCodeConfig, CodeDataSource, CodeGraphicType } from './code';
 
 /** Kinds of content a layout slot can accept. Extend here when a new slot type is needed. */
-export type SlotType = 'text' | 'image' | 'product' | 'productGrid' | 'code';
+export type SlotType = 'text' | 'image' | 'product' | 'productGrid' | 'code' | 'list';
 
 export interface SlotSchema {
   id: string;
@@ -18,7 +18,8 @@ export type SlotValue =
   | { type: 'image'; assetId: string | null }
   | { type: 'product'; product: ShopifyProduct | null; cardCode: CardCodeConfig | null }
   | { type: 'productGrid'; products: ShopifyProduct[]; cardCode: CardCodeConfig | null }
-  | { type: 'code'; codeType: CodeGraphicType; dataSource: CodeDataSource; boundProductSlotId: string | null };
+  | { type: 'code'; codeType: CodeGraphicType; dataSource: CodeDataSource; boundProductSlotId: string | null }
+  | { type: 'list'; items: { id: string; text: string }[] };
 
 /**
  * Shared by the click-to-add flow (CollectionBrowser) and drag-and-drop onto a canvas slot
@@ -57,5 +58,7 @@ export function emptySlotValue(schema: SlotSchema): SlotValue {
       return { type: 'productGrid', products: [], cardCode: null };
     case 'code':
       return { type: 'code', codeType: 'qr', dataSource: { kind: 'custom', value: '' }, boundProductSlotId: null };
+    case 'list':
+      return { type: 'list', items: [] };
   }
 }

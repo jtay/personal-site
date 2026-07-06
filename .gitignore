@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Generated build output for the catalogue-builder tool (built from tools-src/catalogue-builder)
+public/tools/catalogue-builder
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

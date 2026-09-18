@@ -12,11 +12,10 @@ export const HomepageIntroduction = () => {
         </Text>
         <Text as="p">
           Currently full-time at{' '}
-          <Link url="https://onstate.co.uk/" target="_blank" monochrome>
-            Onstate
+          <Link url="https://gymking.com/" target="_blank" monochrome>
+            GYMKING
           </Link>
-          , a Shopify Plus Platinum Partner agency offering a range of commercial
-          services from strategy to implementation.
+          , a gymwear brand in Leeds, UK.
         </Text>
         <Text as="p">
           I'm a huge advocate for open source software and enjoy building

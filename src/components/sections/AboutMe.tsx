@@ -38,7 +38,7 @@ export const AboutMe = () => {
             </InlineStack>
             <InlineStack gap="300" align="space-around">
               <InlineIconMessage icon={LocationIcon} message="Leeds, UK" />
-              <InlineIconMessage icon={WorkIcon} message="Onstate Ltd" />
+              <InlineIconMessage icon={WorkIcon} message="GYMKING" />
             </InlineStack>
           </BlockStack>
         </Box>

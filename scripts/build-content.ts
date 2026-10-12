@@ -9,7 +9,7 @@ const CATEGORIES_FILE = path.resolve('src/data/categories.json');
 const SITEMAP_FILE = path.resolve('public/sitemap.xml');
 const ROBOTS_FILE = path.resolve('public/robots.txt');
 
-const DOMAIN = 'https://susan.com'; // Change to actual domain
+const DOMAIN = 'https://jtay.co.uk';
 
 async function buildContent() {
   console.log('Building content and generating sitemap...');

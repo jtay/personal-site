@@ -1,26 +1,23 @@
 ---
 title: "EscNotes - Print Notes as Receipts"
-subtitle: "A MacOS application for printing simple notes from markdown as ESC/POS receipts using Tauri and React, improving productivity and task-tracking with physical reminders."
+subtitle: "A small macOS app for printing markdown notes as ESC/POS receipts, built with Tauri and React."
 publishedAt: "2025-07-06T00:00:00.000Z"
 categories: ["Productivity", "Engineering"]
 featuredImage_portrait: "escnotes.png"
 ---
 
-When you have an ESC/POS receipt printer sitting on your desk collecting dust, the obvious question becomes: how can I actually use this thing?
-That's exactly what led me to build EscNotes — an open-source macOS app that transforms simple notes into printed receipts. What started as a weekend project to breathe life into old hardware has become an unexpectedly effective productivity tool.
+I've had an ESC/POS receipt printer sitting on my desk collecting dust for a while, and I kept wondering what I could actually do with it. The answer ended up being EscNotes, a small open-source macOS app that prints notes as receipts. It started as a weekend project to give some old hardware a second life, and it's turned out to be surprisingly useful.
 
-About six months ago, I was working on a proof-of-concept for a local deli interested in adding self-service online and in-store ordering. As a Shopify developer, I naturally suggested building their system on Shopify's platform. With a free weekend and an old ESC/POS printer gathering dust, I created an end-to-end solution where customers could customize their sandwiches online, and orders would automatically print in the kitchen via WebSockets and a desktop app.
+The printer code goes back to a proof of concept I built about six months ago. A local deli was interested in self-service ordering, both online and in-store, and being a Shopify developer I suggested building it on Shopify. I had a free weekend and the old printer lying around, so I put together an end-to-end version: customers could customise their sandwiches online, and orders printed automatically in the kitchen over WebSockets via a little desktop app.
 
-The deli ultimately passed on the project (they still don't have an online presence), but I was left with functioning printer code and a nagging feeling that this hardware could serve a better purpose.
+The deli passed in the end (they still aren't online), but I was left with working printer code and a nagging feeling it could be put to better use.
 
-Fast-forward to recent weeks. Work has been intense with a new client and a particularly complex project involving multiple moving parts. I found myself using Postman to manually print receipts for tasks and reminders — and discovered something interesting: physical notes demand more attention than digital ones.
+Fast forward to the last few weeks. Work has been intense with a new client and a project that has a lot of moving parts, and I'd started using Postman to print out tasks and reminders by hand. What surprised me was how much more attention I paid to them. Something about holding a task on paper makes it feel more real and more urgent than another item in a todo app. It's a small thing, but I'll take it.
 
-There's something about holding a printed task that makes it feel more real, more urgent. Small productivity wins like this are always worth pursuing, especially when they emerge from repurposing existing tools.
+Firing off requests from Postman got old quickly, so I spent a weekend turning it into a proper app. It's built with Tauri, TypeScript, React and shadcn/ui (styled with Tailwind), and it sits in my dock so I can print any note straight away.
 
-Rather than continue with my makeshift CLI solution, I decided to build something more polished. Over a weekend, I used Tauri with TypeScript, React, and shadcn/ui (styled with Tailwind) to create a simple app that lives in my dock. Now I can instantly convert any digital note into a physical receipt.
+I went with Tauri because it let me use the web tech I already know while still getting native performance, and React meant I could lean on existing components instead of building the UI from scratch.
 
-The tech stack choice was deliberate: Tauri provides the perfect balance of web technologies with native performance, while the React ecosystem offers the UI components and styling tools needed for a clean, functional interface.
+The frustrating part is distribution. I'd love to put EscNotes on the Mac App Store, but Apple charges independent developers £79 a year. I get charging to list something on a store, but paying just so people can install free, open-source software without compiling it themselves feels like corporate greed, and I'm not going to put my money towards that.
 
-Here's where things get frustrating. I'd love to distribute EscNotes through the Mac App Store, but Apple's £79 annual developer fee for independent creators is unreasonable. I understand charging for App Store listings, but requiring payment just to share open-source software without forcing users to compile it themselves feels like corporate greed — the kind I refuse to support with my wallet.
-
-Instead, EscNotes is freely available on GitHub. If you have a receipt printer collecting dust or you're curious about turning digital notes into physical reminders, you can find the complete source code [here](https://github.com/jtay/escnotes).
+So instead it's free on GitHub. If you've got a receipt printer doing nothing, or you just like the idea of paper reminders, [grab the source](https://github.com/jtay/escnotes) and give it a go.

@@ -7,54 +7,41 @@ featuredImage_portrait: "metascheduler-icon.png"
 featuredImage_landscape: "metascheduler-ad.png"
 ---
 
-Shopify will almost definitely release a native metaobject scheduling feature in the future. Every other resource; products, collections, blog posts, etc. have this feature. It's a standard feature for any content management system, and honestly, it's a surprise that it's not available yet. 
+Shopify will almost definitely release a native metaobject scheduling feature at some point. Every other resource (products, collections, blog posts and so on) already has it. It's a standard feature in any content management system and, honestly, it's a surprise it isn't there yet.
 
-After carelessly promising someone that they could flip a switch (the publishing capability) to schedule a specific metaobject entry to flip to the "published" status at a specific time, I had to scramble to find a solution.
+After carelessly promising someone they could schedule a metaobject entry to switch to "published" at a specific time, I had to scramble to find a solution.
 
-I looked into a few options - Shopify Flow was my first instinct. The problem was quickly solved for the client, but I couldn't help but think there was a more elegant solution in there somewhere. That evening around 7:30pm, I kicked off the app using Shopify's Remix App starter. Got their new AI tooling integrated with my local dev environment and started hacking away. By 11:30pm I had a working prototype.
+I looked at a few options, and Shopify Flow was my first instinct. A couple of Flow automations and some conditional logic later, the client was sorted. It wasn't elegant, but it worked.
 
-It wasn’t elegant, but it worked. A couple of Flow automations, some conditional logic, and a vague sense that I’d revisit it “properly” later. You know how that goes.
+What bugged me wasn't that it was fragile. It was that scheduling content shouldn't be a side effect of an automation tool. You should be able to say what you want to change and when, and let the system handle the rest.
 
-The thing that kept bothering me wasn’t that it was fragile — it’s that it didn’t feel like the right abstraction. Scheduling content shouldn’t be a side-effect of an automation tool. It should be the thing itself. Define a time, define a target, and let the system handle the rest.
+So that evening, around 7:30pm, I kicked off an app using Shopify's Remix app starter, got their new AI tooling integrated with my local dev environment and started hacking away.
 
-So I pulled it apart.
+The first pass was basically a thin layer over what I'd already done in Flow: store a timestamp, wait for it, flip the published flag. It worked, but there was no real sense of state. You couldn't easily answer simple questions like what's going live tomorrow, what's just expired, or whether something is live because of a schedule or because someone published it manually.
 
-The first pass was basically just a thin layer over what I’d already built: store a timestamp, listen for it, flip the published flag. It worked, but it was still too implicit. There was no real sense of state. You couldn’t easily answer simple questions like: what’s going live tomorrow? what just expired? what’s currently active because of a schedule vs manually published?
+That's when I realised it needed to work more like a timeline than a toggle. A schedule isn't just a single moment, it's a window. Sometimes it's a one-off, sometimes it repeats, and sometimes it overlaps with other schedules. Once I started thinking about it that way, the rest of the design came together pretty quickly.
 
-That’s when it clicked that this needed to be treated less like a toggle and more like a timeline.
+Each schedule became its own object that knows:
 
-Instead of thinking “publish at X,” I started thinking in ranges and intent. A schedule isn’t just a moment — it’s a window. Sometimes that window is a single point in time, sometimes it repeats, sometimes it overlaps with others. Once I leaned into that, the rest of the shape fell out pretty naturally.
+- what it affects
+- how it repeats, if it does
+- its own timezone (this one turned out to matter a lot)
 
-Each schedule became a first-class object:
+After that it was just mechanics. A small worker loop checks for schedules that are due, publishes or unpublishes the entry, and updates the schedule's state. No long-running jobs and nothing clever.
 
-- it knows what it affects
-- it knows how it repeats (or doesn’t)
-- and critically, it knows its own timezone
+By 11:30pm I had a working prototype, and a few things surprised me:
 
-From there, the rest was just mechanics.
+- one-off schedules were trivial
+- recurring schedules (daily, weekly) were easier than I expected
+- minute-level precision came for free
+- timezone bugs showed up straight away, which was actually a good thing
 
-A small worker loop checks for due schedules. When one hits, it applies the change — publish or unpublish — and updates its own state. Nothing fancy. No long-running jobs, no over-engineering. Just a system that wakes up, does what it said it would do, and goes back to sleep.
+The next day after work I carried on, and by the end of the evening I'd built a full UI, added a bunch of tests around the timezone handling and prepared the App Store listing.
 
-The UI followed the same philosophy: don’t be clever, just be clear.
+For the UI I mostly wanted one place to see what's going on, rather than digging through logs or piecing it together from scattered fields. Just a list of what's active and what isn't. That ended up being more useful than I expected. Half the problem with scheduling is being able to see what's going to happen, not making it happen.
 
-Shopify's new Polaris Preact web component library was a **nightmare** to work with. It's not well documented enough yet and some bits are just missing from the TS definitions. Polaris React was a much easier library to work with and the documentation felt much stronger. I do appreciate the necessity of a unified component library across the platform, but I trust the Shopify team are already all over it.
+Shopify's new Polaris Preact web component library was a **nightmare** to work with. It's not well documented yet and some bits are just missing from the TS definitions. Polaris React was much easier to work with and the documentation felt much stronger. I get why they want a unified component library across the platform, and I trust the Shopify team are already all over it.
 
-I wanted a single place where you could actually see what’s going on. Not buried in logs or inferred from scattered fields. Just a list:
+Shopify's new managed billing API made it trivial to add a free plan for one-off schedules and a subscription for recurring ones.
 
-- what’s active
-- not active
-
-That alone ended up being more useful than I expected. It turns out visibility is half the problem with scheduling — not execution.
-
-By the end of the night, the prototype was doing a few things I hadn’t originally planned:
-
-- one-off schedules felt trivial
-- recurring schedules (daily, weekly) were surprisingly straightforward
-- minute-level precision just… fell out of the implementation
-- timezone bugs showed up immediately, which was actually a good thing
-
-The next day after work I decided to carry on, and by the end of the next evening I'd built a full UI, added a bunch of tests to the timezone stuff and prepared the App Store listing. 
-
-Shopify's new managed billing API made it trivial to add a free plan for one-off schedules and a subscription model for recurring schedules. 
-
-It's in review right now, fingers crossed it gets approved quickly.
+It's in review right now, so fingers crossed it gets approved quickly.
